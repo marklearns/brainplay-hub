@@ -432,17 +432,20 @@ function renderGrid(){
   grid.innerHTML='';
   GAMES.forEach((g,i)=>{
     // Ad banner every 10 games
-    if(i>0&&i%10===0){
-      const banner=document.createElement('div');
-      banner.className='ad-banner-block';
+    if(i>0&&i%10===0&&Math.floor(i/10)<=3){
       const slotNum=Math.floor(i/10);
-      const containerId='container-7806174fded7cb81f34f0b55d834afd2'+(slotNum>1?'-'+slotNum:'');
+      const adConfigs=[
+        {id:'container-7806174fded7cb81f34f0b55d834afd2',src:'https://encyclopediainsoluble.com/7806174fded7cb81f34f0b55d834afd2/invoke.js'},
+        {id:'container-4e4aa0233179feedb91f9d38f2486583',src:'https://encyclopediainsoluble.com/4e4aa0233179feedb91f9d38f2486583/invoke.js'},
+        {id:'container-7ebc5c371389d146a35b8dbe7d41c556',src:'https://encyclopediainsoluble.com/7ebc5c371389d146a35b8dbe7d41c556/invoke.js'},
+      ];
+      const cfg=adConfigs[slotNum-1];
       const adDiv=document.createElement('div');
-      adDiv.id=containerId;
+      adDiv.id=cfg.id;
       const adScript=document.createElement('script');
       adScript.async=true;
       adScript.setAttribute('data-cfasync','false');
-      adScript.src='https://encyclopediainsoluble.com/7806174fded7cb81f34f0b55d834afd2/invoke.js';
+      adScript.src=cfg.src;
       banner.appendChild(adDiv);
       banner.appendChild(adScript);
       grid.appendChild(banner);
