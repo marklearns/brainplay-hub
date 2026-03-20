@@ -433,6 +433,8 @@ function renderGrid(){
   GAMES.forEach((g,i)=>{
     // Ad banner every 10 games
     if(i>0&&i%10===0&&Math.floor(i/10)<4){
+      const banner=document.createElement('div');
+      banner.className='ad-banner-block';
       const slotNum=Math.floor(i/10);
       const adConfigs=[
         {id:'container-7806174fded7cb81f34f0b55d834afd2',src:'https://encyclopediainsoluble.com/7806174fded7cb81f34f0b55d834afd2/invoke.js'},
@@ -449,7 +451,7 @@ function renderGrid(){
       banner.appendChild(adDiv);
       banner.appendChild(adScript);
       grid.appendChild(banner);
-    }
+   }
     const isUnlocked=!!unlocked[g.id],hsVal=hs[g.id];
     const card=document.createElement('div');
     card.className='game-card'+(isUnlocked?' unlocked':'');
