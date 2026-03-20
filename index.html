@@ -435,7 +435,7 @@ function renderGrid(){
     if(i>0&&i%10===0){
       const banner=document.createElement('div');
       banner.className='ad-banner-block';
-      banner.innerHTML='<div id="container-7806174fded7cb81f34f0b55d834afd2"></div>';
+      banner.innerHTML='<div id="container-7806174fded7cb81f34f0b55d834afd2-'+Math.floor(i/10)+'"></div>';
       grid.appendChild(banner);
     }
     const isUnlocked=!!unlocked[g.id],hsVal=hs[g.id];
