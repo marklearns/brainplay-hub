@@ -512,7 +512,20 @@ function closeGame(){document.getElementById('gameOverlay').classList.remove('ac
 /* GAME UTILS */
 function gameBody(){return document.getElementById('gameBody');}
 function lbHTML(key){const lb=getLB(key);if(!lb.length)return'';return'<div class="lb-panel"><div class="lb-title">🏆 Leaderboard</div>'+lb.map((s,i)=>'<div class="lb-row"><span class="lb-rank">#'+(i+1)+'</span><span>'+(i===0?'🥇':i===1?'🥈':'🥉')+' You</span><span class="lb-score">'+s+'</span></div>').join('')+'</div>';}
-function adRetryHTML(){return'<div class="ad-placeholder" style="margin-top:14px;font-size:0.68rem">📺 RETRY AD <!-- INSERT AD SCRIPT HERE --></div>';}
+function adRetryHTML(){
+  setTimeout(()=>{
+    const slot=document.getElementById('retryAdSlot');
+    if(slot&&!slot.hasChildNodes()){
+      const adScript=document.createElement('script');
+      adScript.innerHTML='atOptions={"key":"1d19bf637ab2e98cdd48a3dcec2f5d90","format":"iframe","height":50,"width":320,"params":{}};';
+      const invokeScript=document.createElement('script');
+      invokeScript.src='https://encyclopediainsoluble.com/1d19bf637ab2e98cdd48a3dcec2f5d90/invoke.js';
+      slot.appendChild(adScript);
+      slot.appendChild(invokeScript);
+    }
+  },300);
+  return'<div id="retryAdSlot" style="display:flex;justify-content:center;margin-top:14px"></div>';
+                                                                                                                                                                                                                                                     }
 function endScreen(id,score,msg){
   saveLB(id,score);saveHS(id,score);renderGrid();
   const g=GAMES.find(x=>x.id===id);
