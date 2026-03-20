@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrainPlay Hub – Play. Think. Dominate.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--bg2:#0f0f1a;--bg3:#13131f;--card:#12121e;--neon-blue:#00d4ff;--neon-purple:#a855f7;--neon-pink:#ff2d78;--neon-green:#39ff14;--neon-gold:#ffd700;--text:#e0e0f0;--text-dim:#7070a0;--border:#1e1e3a;--glow-blue:0 0 20px rgba(0,212,255,0.4);--glow-purple:0 0 20px rgba(168,85,247,0.4);--radius:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:16px;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(0,212,255,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(168,85,247,0.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+header{text-align:center;padding:50px 20px 30px;position:relative;z-index:1}
+.logo{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,6vw,4.5rem);font-weight:900;background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:3px;line-height:1.1;filter:drop-shadow(0 0 30px rgba(0,212,255,0.5))}
+.tagline{margin-top:10px;font-size:1.1rem;color:var(--text-dim);letter-spacing:6px;text-transform:uppercase;font-weight:300}
+.header-stats{display:flex;justify-content:center;gap:30px;margin-top:24px;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-num{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;color:var(--neon-blue)}
+.stat-label{font-size:0.7rem;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase}
+.currency-hud{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9998;display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--neon-gold);border-radius:30px;padding:7px 18px;box-shadow:0 0 20px rgba(255,215,0,0.2);transition:box-shadow 0.3s;white-space:nowrap}
+.currency-hud.pulse{box-shadow:0 0 40px rgba(255,215,0,0.6)}
+.currency-icon{font-size:1.1rem}
+.currency-amt{font-family:'Orbitron',sans-serif;font-size:0.85rem;color:var(--neon-gold);font-weight:700;letter-spacing:1px}
+.currency-level{font-size:0.6rem;color:var(--text-dim);letter-spacing:1px}
+.level-bar-wrap{width:55px;height:4px;background:var(--border);border-radius:99px;overflow:hidden}
+.level-bar{height:100%;background:linear-gradient(90deg,var(--neon-gold),var(--neon-purple));border-radius:99px;transition:width 0.5s}
+.sound-toggle{position:fixed;top:14px;right:14px;z-index:9999;background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:0.85rem;letter-spacing:1px;transition:border-color 0.2s}
+.sound-toggle:hover{border-color:var(--neon-blue)}
+.grid-section{padding:16px 20px 60px;position:relative;z-index:1;max-width:1400px;margin:0 auto}
+.section-title{font-family:'Orbitron',sans-serif;font-size:0.75rem;letter-spacing:4px;color:var(--text-dim);text-transform:uppercase;text-align:center;margin-bottom:24px}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:13px}
+.ad-banner-block{grid-column:1/-1;background:var(--bg2);border:1px dashed var(--border);border-radius:12px;padding:16px;text-align:center;font-size:0.68rem;color:var(--text-dim);letter-spacing:2px}
+.game-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 15px;cursor:pointer;transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:6px;animation:fadeIn 0.4s ease both}
+.game-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,212,255,0.03),rgba(168,85,247,0.03));opacity:0;transition:opacity 0.25s}
+.game-card:hover{transform:translateY(-4px) scale(1.02);border-color:var(--neon-blue);box-shadow:var(--glow-blue)}
+.game-card:hover::before{opacity:1}
+.game-card.unlocked{border-color:rgba(0,212,255,0.25)}
+.card-icon{font-size:1.8rem;line-height:1}
+.card-num{position:absolute;top:9px;right:10px;font-family:'Orbitron',sans-serif;font-size:0.55rem;color:var(--text-dim);letter-spacing:1px}
+.card-lock{position:absolute;top:7px;left:9px;font-size:0.7rem;color:var(--neon-purple)}
+.card-name{font-family:'Orbitron',sans-serif;font-size:0.68rem;font-weight:700;color:var(--neon-blue);letter-spacing:1px;line-height:1.3;margin-top:2px}
+.card-desc{font-size:0.76rem;color:var(--text-dim);line-height:1.4}
+.card-hs{font-size:0.66rem;color:var(--neon-green);margin-top:auto}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.overlay.active{display:flex}
+.ad-box{background:var(--bg2);border:1px solid var(--neon-purple);border-radius:20px;padding:34px 30px;text-align:center;max-width:400px;width:92%;box-shadow:0 0 60px rgba(168,85,247,0.3);animation:popIn 0.3s ease}
+@keyframes popIn{from{transform:scale(0.85);opacity:0}to{transform:scale(1);opacity:1}}
+.ad-lock-icon{font-size:2.8rem;margin-bottom:12px}
+.ad-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;color:var(--neon-purple);margin-bottom:8px}
+.ad-sub{color:var(--text-dim);font-size:0.84rem;margin-bottom:18px;line-height:1.5}
+.ad-progress{display:none;margin-bottom:14px}
+.ad-bar-wrap{background:var(--bg3);border-radius:99px;height:8px;overflow:hidden;margin-bottom:6px}
+.ad-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--neon-purple),var(--neon-blue));border-radius:99px;transition:width 0.1s}
+.ad-timer{font-size:0.74rem;color:var(--text-dim)}
+.ad-placeholder{background:var(--bg3);border:1px dashed var(--border);border-radius:10px;padding:14px;margin-bottom:14px;font-size:0.68rem;color:var(--text-dim);letter-spacing:2px}
+.btn{display:inline-block;padding:11px 22px;border-radius:10px;border:none;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:0.73rem;letter-spacing:2px;font-weight:700;transition:all 0.2s}
+.btn-primary{background:linear-gradient(135deg,var(--neon-purple),var(--neon-blue));color:#fff;box-shadow:0 0 20px rgba(168,85,247,0.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(168,85,247,0.6)}
+.btn-secondary{background:transparent;color:var(--text-dim);border:1px solid var(--border);font-size:0.68rem}
+.btn-secondary:hover{border-color:var(--text-dim);color:var(--text)}
+.btn-gold{background:linear-gradient(135deg,var(--neon-gold),#ff8c00);color:#000}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(255,215,0,0.4)}
+.btn-green{background:linear-gradient(135deg,#39ff14,#00d4ff);color:#000}
+.btn-red{background:linear-gradient(135deg,var(--neon-pink),var(--neon-purple));color:#fff}
+.game-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
+.game-overlay.active{display:flex}
+.game-modal{background:var(--bg2);border:1px solid var(--neon-blue);border-radius:20px;width:min(700px,96vw);max-height:92vh;overflow-y:auto;box-shadow:0 0 80px rgba(0,212,255,0.2);animation:popIn 0.3s ease;position:relative}
+.game-header{display:flex;align-items:center;justify-content:space-between;padding:17px 22px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:10}
+.game-title{font-family:'Orbitron',sans-serif;font-size:0.88rem;color:var(--neon-blue);letter-spacing:2px}
+.close-btn{background:none;border:1px solid var(--border);color:var(--text);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s}
+.close-btn:hover{border-color:var(--neon-pink);color:var(--neon-pink)}
+.game-body{padding:20px}
+.game-instructions{background:var(--bg3);border-radius:10px;padding:11px 13px;font-size:0.83rem;color:var(--text-dim);line-height:1.6;margin-bottom:16px;border-left:3px solid var(--neon-purple)}
+.game-score-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.score-chip{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-family:'Orbitron',sans-serif;font-size:0.73rem}
+.score-chip span{color:var(--neon-blue)}
+.game-area{min-height:180px;background:var(--bg3);border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;position:relative}
+.game-end{text-align:center;padding:22px 14px;display:none;flex-direction:column;gap:11px}
+.end-score{font-family:'Orbitron',sans-serif;font-size:2rem;color:var(--neon-blue)}
+.end-msg{color:var(--text-dim)}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:7px}
+.reward-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:3000;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
+.reward-popup.active{display:flex}
+.reward-box{background:var(--bg2);border:1px solid var(--neon-gold);border-radius:20px;padding:34px 30px;text-align:center;max-width:380px;width:92%;box-shadow:0 0 60px rgba(255,215,0,0.25);animation:popIn 0.35s ease}
+.reward-icon{font-size:2.8rem;margin-bottom:10px}
+.reward-title{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--neon-gold);margin-bottom:5px}
+.reward-amount{font-family:'Orbitron',sans-serif;font-size:2.4rem;color:var(--neon-gold);font-weight:900;margin:7px 0;text-shadow:0 0 20px rgba(255,215,0,0.5)}
+.reward-sub{color:var(--text-dim);font-size:0.8rem;margin-bottom:18px}
+.reward-ad-bar-wrap{background:var(--bg3);border-radius:99px;height:8px;overflow:hidden;margin:8px 0 5px}
+.reward-ad-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--neon-gold),var(--neon-purple));border-radius:99px;transition:width 0.1s}
+.daily-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.87);z-index:3500;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
+.daily-popup.active{display:flex}
+.daily-box{background:var(--bg2);border:1px solid var(--neon-gold);border-radius:20px;padding:38px 34px;text-align:center;max-width:360px;width:92%;box-shadow:0 0 80px rgba(255,215,0,0.3);animation:popIn 0.35s ease}
+.daily-days{display:flex;gap:7px;justify-content:center;margin:18px 0}
+.daily-day{width:42px;height:42px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:0.6rem;flex-direction:column;gap:2px;color:var(--text-dim)}
+.daily-day.today{border-color:var(--neon-gold);color:var(--neon-gold);box-shadow:0 0 12px rgba(255,215,0,0.3)}
+.daily-day.claimed{border-color:var(--neon-green);color:var(--neon-green);opacity:0.6}
+#reaction-screen{width:100%;min-height:190px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:1.1rem;cursor:pointer;transition:background 0.1s;user-select:none;border:2px solid var(--border)}
+#aim-area{width:100%;height:250px;position:relative;overflow:hidden;cursor:crosshair;background:var(--bg);border-radius:12px;border:1px solid var(--border)}
+.aim-target{position:absolute;border-radius:50%;background:radial-gradient(circle,var(--neon-pink),var(--neon-purple));box-shadow:0 0 15px rgba(255,45,120,0.6);cursor:crosshair;transform:translate(-50%,-50%)}
+#memory-grid{display:grid;gap:7px;width:100%}
+.mem-card{aspect-ratio:1;background:var(--bg2);border:2px solid var(--border);border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;user-select:none;transition:transform 0.2s,border-color 0.2s}
+.mem-card.flipped{border-color:var(--neon-blue);background:var(--bg3)}
+.mem-card.matched{border-color:var(--neon-green);opacity:0.6;cursor:default}
+.mem-card .face{display:none}
+.mem-card.flipped .face,.mem-card.matched .face{display:block}
+#guess-input{background:var(--bg);border:1px solid var(--neon-blue);color:var(--text);border-radius:8px;padding:10px 14px;font-family:'Orbitron',sans-serif;font-size:1rem;width:110px;text-align:center}
+.battle-chars{display:flex;justify-content:space-around;width:100%;margin-bottom:16px}
+.char-box{text-align:center}
+.char-name{font-family:'Orbitron',sans-serif;font-size:0.68rem;margin-bottom:5px;color:var(--neon-blue)}
+.hp-bar-wrap{width:100px;background:var(--bg);border-radius:99px;height:8px;overflow:hidden;border:1px solid var(--border)}
+.hp-bar{height:100%;background:var(--neon-green);border-radius:99px;transition:width 0.4s}
+.hp-bar.enemy{background:var(--neon-pink)}
+.char-hp{font-size:0.68rem;color:var(--text-dim);margin-top:3px}
+.char-emoji{font-size:2rem}
+.battle-log{background:var(--bg);border-radius:10px;padding:9px;font-size:0.76rem;color:var(--text-dim);min-height:50px;max-height:70px;overflow-y:auto;width:100%}
+.battle-btns{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
+#puzzle-grid{display:grid;gap:4px;width:232px}
+.tile{width:100%;aspect-ratio:1;background:var(--bg2);border:2px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:1.1rem;cursor:pointer;transition:all 0.15s;color:var(--neon-blue)}
+.tile.empty{background:var(--bg3);border-color:transparent;cursor:default}
+.tile:not(.empty):hover{border-color:var(--neon-blue)}
+.quiz-options{display:flex;flex-direction:column;gap:8px;width:100%}
+.quiz-opt{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;cursor:pointer;font-size:0.9rem;transition:all 0.2s;text-align:left}
+.quiz-opt:hover{border-color:var(--neon-blue);background:rgba(0,212,255,0.05)}
+.quiz-opt.correct{border-color:var(--neon-green);background:rgba(57,255,20,0.1)}
+.quiz-opt.wrong{border-color:var(--neon-pink);background:rgba(255,45,120,0.1)}
+#click-btn{width:128px;height:128px;border-radius:50%;background:radial-gradient(circle,var(--neon-purple),#5500bb);border:3px solid var(--neon-purple);cursor:pointer;font-family:'Orbitron',sans-serif;font-size:0.88rem;color:#fff;box-shadow:0 0 30px rgba(168,85,247,0.5);transition:transform 0.1s,box-shadow 0.1s;user-select:none}
+#click-btn:active{transform:scale(0.93)}
+.pattern-grid{display:grid;gap:8px}
+.pat-cell{width:66px;height:66px;border-radius:12px;cursor:pointer;transition:transform 0.1s,opacity 0.1s;border:2px solid var(--border)}
+.pat-cell:active{transform:scale(0.9)}
+#typing-text{font-size:0.98rem;color:var(--text-dim);line-height:1.8;margin-bottom:12px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border);letter-spacing:1px;width:100%}
+#typing-input{width:100%;background:var(--bg);border:1px solid var(--neon-blue);color:var(--text);border-radius:8px;padding:9px 12px;font-size:0.93rem;font-family:'Rajdhani',sans-serif}
+#typing-input:focus{outline:none;box-shadow:var(--glow-blue)}
+.math-problem{font-family:'Orbitron',sans-serif;font-size:2rem;color:var(--text);margin-bottom:16px;text-align:center}
+.math-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%}
+.math-opt{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:0.98rem;text-align:center;transition:all 0.2s}
+.math-opt:hover{border-color:var(--neon-blue);background:rgba(0,212,255,0.05)}
+.color-word{font-family:'Orbitron',sans-serif;font-size:2.6rem;margin-bottom:16px;font-weight:900;text-shadow:0 0 20px currentColor}
+.color-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.color-opt{padding:12px;border-radius:10px;border:2px solid transparent;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:0.8rem;transition:transform 0.15s}
+.color-opt:hover{transform:scale(1.04)}
+#dodge-area{width:100%;height:260px;background:var(--bg);border-radius:12px;position:relative;overflow:hidden;border:1px solid var(--border)}
+#dodge-player{width:32px;height:32px;background:var(--neon-blue);border-radius:50%;position:absolute;bottom:14px;box-shadow:0 0 15px var(--neon-blue);transition:left 0.08s}
+.dodge-block{width:32px;height:32px;background:var(--neon-pink);border-radius:6px;position:absolute;top:0;box-shadow:0 0 10px rgba(255,45,120,0.5)}
+#reflex-area{width:100%;height:240px;background:var(--bg);border-radius:12px;position:relative;overflow:hidden;border:1px solid var(--border);cursor:pointer}
+.reflex-zone{position:absolute;border-radius:12px;background:linear-gradient(135deg,var(--neon-green),var(--neon-blue));opacity:0.9;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:0.72rem;color:#000;cursor:pointer;box-shadow:0 0 20px rgba(57,255,20,0.4);animation:rfPulse 0.4s ease infinite alternate}
+@keyframes rfPulse{from{transform:scale(1)}to{transform:scale(1.05)}}
+.seq-nums{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.seq-num{width:48px;height:48px;background:var(--bg);border:2px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:0.98rem;cursor:pointer;user-select:none;transition:border-color 0.2s}
+.seq-num:hover{border-color:var(--neon-blue)}
+#maze-canvas{border:2px solid var(--neon-blue);border-radius:8px;box-shadow:var(--glow-blue);max-width:100%}
+.maze-controls{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.maze-btn{width:48px;height:48px;background:var(--bg);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s;color:var(--text)}
+.maze-btn:hover{border-color:var(--neon-blue)}
+.gen-result{background:var(--bg);border:1px solid var(--neon-purple);border-radius:12px;padding:16px;text-align:center;font-size:0.98rem;line-height:1.7;min-height:70px;color:var(--text);display:flex;align-items:center;justify-content:center;width:100%}
+.upgrades-panel{display:flex;flex-direction:column;gap:6px;width:100%;margin-top:10px}
+.upgrade-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 11px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color 0.2s}
+.upgrade-item:hover{border-color:var(--neon-purple)}
+.upgrade-name{font-size:0.83rem;color:var(--text)}
+.upgrade-cost{font-family:'Orbitron',sans-serif;font-size:0.7rem;color:var(--neon-purple)}
+.lb-panel{margin-top:13px}
+.lb-title{font-family:'Orbitron',sans-serif;font-size:0.66rem;letter-spacing:3px;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase}
+.lb-row{display:flex;justify-content:space-between;font-size:0.78rem;padding:4px 0;border-bottom:1px solid var(--border)}
+.lb-rank{color:var(--neon-purple);width:22px}
+.lb-score{color:var(--neon-blue);font-family:'Orbitron',sans-serif;font-size:0.73rem}
+#ms-board{display:inline-grid;gap:3px;padding:11px;background:var(--bg);border-radius:12px;border:1px solid var(--border);user-select:none}
+.ms-cell{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:0.65rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--card);transition:background 0.1s,transform 0.1s;-webkit-tap-highlight-color:transparent}
+.ms-cell:hover:not(.ms-rev):not(.ms-flag){background:#1a1a2e;border-color:#00d4ff44;transform:scale(1.08)}
+.ms-cell.ms-rev{background:var(--bg3);border-color:#13131f;cursor:default}
+.ms-cell.ms-flag{background:rgba(255,45,120,0.08);border-color:#ff2d78}
+.ms-cell.ms-boom{background:rgba(255,45,120,0.3);border-color:#ff2d78;box-shadow:0 0 12px rgba(255,45,120,0.6);animation:msBoom 0.4s ease}
+.ms-cell.ms-mrev{background:#1a0a14;border-color:#ff2d7844}
+@keyframes msBoom{0%{transform:scale(1)}40%{transform:scale(1.4)}100%{transform:scale(1)}}
+.ms-n1{color:#00d4ff}.ms-n2{color:#39ff14}.ms-n3{color:#ff2d78}.ms-n4{color:#a855f7}.ms-n5{color:#ff8c00}.ms-n6{color:#00ffcc}.ms-n7{color:#ff0}.ms-n8{color:#aaa}
+#streak-area{width:100%;min-height:200px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;border:2px solid var(--border);position:relative;overflow:hidden;transition:border-color 0.15s}
+#runner-canvas{border:1px solid var(--border);border-radius:10px;max-width:100%;display:block}
+.fake-btn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:100%}
+.fake-btn{padding:13px 9px;border-radius:10px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-family:'Orbitron',sans-serif;font-size:0.72rem;color:var(--text);transition:all 0.2s;text-align:center}
+.fake-btn:hover{border-color:var(--neon-blue);background:rgba(0,212,255,0.05)}
+.chain-progress{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap}
+.chain-dot{width:11px;height:11px;border-radius:50%;background:var(--border);transition:background 0.3s}
+.chain-dot.done{background:var(--neon-green)}
+.chain-dot.active{background:var(--neon-blue);box-shadow:0 0 8px var(--neon-blue)}
+footer{text-align:center;padding:34px 20px;color:var(--text-dim);font-size:0.76rem;border-top:1px solid var(--border);position:relative;z-index:1}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--neon-purple)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes coinFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(1.4)}}
+.coin-float{position:fixed;font-family:'Orbitron',sans-serif;font-size:0.88rem;color:var(--neon-gold);font-weight:700;pointer-events:none;z-index:9999;animation:coinFloat 1s ease both}
+</style>
+</head>
+<body>
+<!-- INSERT AD SCRIPT HERE -->
+<div class="currency-hud" id="currencyHud">
+  <span class="currency-icon">⚡</span>
+  <div>
+    <div class="currency-amt" id="currencyAmt">0 NC</div>
+    <div class="currency-level" id="currencyLevel">LVL 1</div>
+    <div class="level-bar-wrap"><div class="level-bar" id="levelBar" style="width:0%"></div></div>
+  </div>
+</div>
+<button class="sound-toggle" id="soundToggle" onclick="toggleSound()">🔊 SOUND ON</button>
+<header>
+  <div class="logo">BrainPlay Hub</div>
+  <div class="tagline">Play. Think. Dominate.</div>
+  <div class="header-stats">
+    <div class="stat"><div class="stat-num" id="statUnlocked">0</div><div class="stat-label">Unlocked</div></div>
+    <div class="stat"><div class="stat-num">40</div><div class="stat-label">Games</div></div>
+    <div class="stat"><div class="stat-num" id="statPlayed">0</div><div class="stat-label">Sessions</div></div>
+  </div>
+</header>
+<div class="grid-section">
+  <div class="section-title">— Choose Your Game —</div>
+  <div class="games-grid" id="gamesGrid"></div>
+</div>
+<div class="overlay" id="adOverlay">
+  <div class="ad-box">
+    <div class="ad-lock-icon">🔒</div>
+    <div class="ad-title">GAME LOCKED</div>
+    <div class="ad-sub">Watch a short ad OR spend <b style="color:var(--neon-gold)">200 NeuroCoins</b> to unlock!</div>
+    <!-- INSERT AD SCRIPT HERE -->
+    <div class="ad-placeholder">📺 AD PLACEHOLDER<br>[ INSERT AD SCRIPT HERE ]</div>
+    <div class="ad-progress" id="adProgress"><div class="ad-bar-wrap"><div class="ad-bar" id="adBar"></div></div><div class="ad-timer" id="adTimer">Loading ad... 4s</div></div>
+    <div id="adBtns" style="display:flex;flex-direction:column;gap:9px;align-items:center">
+      <button class="btn btn-primary" id="watchAdBtn" onclick="startAd()">▶ WATCH AD TO UNLOCK</button>
+      <button class="btn btn-gold" id="coinUnlockBtn" onclick="coinUnlock()">⚡ SPEND 200 NEUROCOINS</button>
+      <button class="btn btn-secondary" onclick="closeAdWall()">✕ Close</button>
+    </div>
+  </div>
+</div>
+<div class="game-overlay" id="gameOverlay">
+  <div class="game-modal" id="gameModal">
+    <div class="game-header">
+      <div class="game-title" id="gameModalTitle">Game</div>
+      <button class="close-btn" onclick="closeGame()">✕</button>
+    </div>
+    <div class="game-body" id="gameBody"></div>
+  </div>
+</div>
+<div class="reward-popup" id="rewardPopup">
+  <div class="reward-box">
+    <div class="reward-icon">⚡</div>
+    <div class="reward-title">NEUROCOINS EARNED!</div>
+    <div class="reward-amount" id="rewardAmt">+50</div>
+    <div class="reward-sub" id="rewardSub">Keep playing to earn more!</div>
+    <!-- INSERT REWARD AD SCRIPT HERE -->
+    <div class="ad-placeholder" style="margin-bottom:12px">📺 REWARD AD<br>[ INSERT REWARD AD SCRIPT HERE ]</div>
+    <div id="rewardAdProgress" style="display:none;margin-bottom:10px"><div class="reward-ad-bar-wrap"><div class="reward-ad-bar" id="rewardAdBar"></div></div><div class="ad-timer" id="rewardAdTimer">Loading... 4s</div></div>
+    <div class="btn-row" id="rewardBtns">
+      <button class="btn btn-gold" onclick="startRewardAd()">📺 2x COINS</button>
+      <button class="btn btn-primary" onclick="closeReward()">✅ COLLECT</button>
+    </div>
+  </div>
+</div>
+<div class="daily-popup" id="dailyPopup">
+  <div class="daily-box">
+    <div style="font-size:2.4rem;margin-bottom:8px">🎁</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--neon-gold);margin-bottom:4px">DAILY REWARD</div>
+    <div style="color:var(--text-dim);font-size:0.8rem;margin-bottom:14px">Come back every day for bigger rewards!</div>
+    <div class="daily-days" id="dailyDays"></div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:1.7rem;color:var(--neon-gold);margin:7px 0" id="dailyAmt">+50</div>
+    <div style="color:var(--text-dim);font-size:0.76rem;margin-bottom:18px">NeuroCoins</div>
+    <button class="btn btn-gold" onclick="claimDaily()" style="width:100%">🎁 CLAIM REWARD</button>
+  </div>
+</div>
+<footer>
+  <p>BrainPlay Hub &copy; 2025 &nbsp;&middot;&nbsp; 40 Free Browser Games &nbsp;&middot;&nbsp; No Download Required</p>
+  <!-- INSERT AD SCRIPT HERE -->
+</footer>
+<script>
+/* AUDIO */
+let soundOn=true;
+const AC=window.AudioContext||window.webkitAudioContext;
+let actx;
+function getAC(){if(!actx)actx=new AC();return actx;}
+function playTone(f,t='sine',d=0.1,v=0.3){if(!soundOn)return;try{const c=getAC(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+d);o.start();o.stop(c.currentTime+d);}catch(e){}}
+function sfxClick(){playTone(440,'sine',0.08,0.2);}
+function sfxWin(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,'sine',0.2,0.3),i*80));}
+function sfxLose(){[400,300,200].forEach((f,i)=>setTimeout(()=>playTone(f,'sawtooth',0.2,0.3),i*80));}
+function sfxTick(){playTone(800,'square',0.05,0.15);}
+function sfxCoin(){playTone(1200,'sine',0.15,0.4);setTimeout(()=>playTone(1500,'sine',0.1,0.3),80);}
+function toggleSound(){soundOn=!soundOn;document.getElementById('soundToggle').textContent=soundOn?'🔊 SOUND ON':'🔇 SOUND OFF';}
+
+/* STORAGE */
+function getUnlocked(){try{return JSON.parse(localStorage.getItem('unlocked_games')||'{}');}catch(e){return{};}}
+function setUnlocked(u){localStorage.setItem('unlocked_games',JSON.stringify(u));}
+function getHS(){try{return JSON.parse(localStorage.getItem('high_scores')||'{}');}catch(e){return{};}}
+function setHS(h){localStorage.setItem('high_scores',JSON.stringify(h));}
+function saveHS(key,val){const h=getHS();if(h[key]===undefined||val>h[key]){h[key]=val;setHS(h);return true;}return false;}
+function getLB(key){try{return JSON.parse(localStorage.getItem('lb_'+key)||'[]');}catch(e){return[];}}
+function saveLB(key,val){let lb=getLB(key);lb.push(val);lb.sort((a,b)=>b-a);lb=lb.slice(0,5);localStorage.setItem('lb_'+key,JSON.stringify(lb));}
+function getSessions(){return parseInt(localStorage.getItem('sessions')||'0');}
+function incSessions(){localStorage.setItem('sessions',getSessions()+1);}
+
+/* NEUROCOIN SYSTEM */
+const LEVELS=[{lvl:1,min:0,max:499},{lvl:2,min:500,max:1499},{lvl:3,min:1500,max:2999},{lvl:4,min:3000,max:5999},{lvl:5,min:6000,max:9999},{lvl:6,min:10000,max:14999},{lvl:7,min:15000,max:Infinity}];
+function getNC(){return parseInt(localStorage.getItem('total_currency')||'0');}
+function getLifetimeNC(){return parseInt(localStorage.getItem('lifetime_earned')||'0');}
+function addNC(amt){const cur=getNC();const newVal=cur+amt;localStorage.setItem('total_currency',newVal);localStorage.setItem('lifetime_earned',getLifetimeNC()+amt);localStorage.setItem('last_reward',Date.now());updateNCDisplay();return newVal;}
+function spendNC(amt){const cur=getNC();if(cur<amt)return false;localStorage.setItem('total_currency',cur-amt);updateNCDisplay();return true;}
+function getLevelData(nc){return LEVELS.find(l=>nc>=l.min&&nc<=l.max)||LEVELS[LEVELS.length-1];}
+function updateNCDisplay(){
+  const nc=getNC();const ld=getLevelData(getLifetimeNC());
+  const amt=document.getElementById('currencyAmt');if(amt)amt.textContent=nc.toLocaleString()+' NC';
+  const lv=document.getElementById('currencyLevel');if(lv)lv.textContent='LVL '+ld.lvl;
+  const bar=document.getElementById('levelBar');
+  if(bar){const pct=ld.max===Infinity?100:Math.round(((getLifetimeNC()-ld.min)/(ld.max-ld.min))*100);bar.style.width=Math.min(pct,100)+'%';}
+  const btn=document.getElementById('coinUnlockBtn');
+  if(btn){btn.textContent=nc>=200?'⚡ SPEND 200 NC (Have: '+nc+')':'⚡ NEED 200 NC (Have: '+nc+')';}
+}
+function floatCoin(amt,x,y){const el=document.createElement('div');el.className='coin-float';el.textContent='+'+amt+' NC';el.style.left=x+'px';el.style.top=y+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1000);}
+function pulseHUD(){const h=document.getElementById('currencyHud');if(h){h.classList.add('pulse');setTimeout(()=>h.classList.remove('pulse'),600);}}
+
+/* REWARD POPUP */
+let pendingRewardAmt=0,_rewardAdTimer=null;
+function showReward(amt,sub){
+  pendingRewardAmt=amt;
+  document.getElementById('rewardAmt').textContent='+'+amt+' NC';
+  document.getElementById('rewardSub').textContent=sub||'Great game!';
+  document.getElementById('rewardAdProgress').style.display='none';
+  document.getElementById('rewardAdBar').style.width='0%';
+  const btns=document.getElementById('rewardBtns');
+  btns.innerHTML='<button class="btn btn-gold" onclick="startRewardAd()">📺 2x COINS</button><button class="btn btn-primary" onclick="closeReward()">✅ COLLECT</button>';
+  document.getElementById('rewardPopup').classList.add('active');
+}
+window.startRewardAd=function(){
+  if(_rewardAdTimer)return;
+  document.getElementById('rewardAdProgress').style.display='block';
+  document.getElementById('rewardBtns').innerHTML='<div style="color:var(--text-dim);font-size:0.78rem;letter-spacing:1px">Ad playing...</div>';
+  let el=0;
+  _rewardAdTimer=setInterval(()=>{
+    el+=50;const pct=(el/4000)*100;
+    const bar=document.getElementById('rewardAdBar');if(bar)bar.style.width=pct+'%';
+    const t=document.getElementById('rewardAdTimer');if(t)t.textContent='Ad playing... '+Math.ceil((4000-el)/1000)+'s';
+    if(el>=4000){clearInterval(_rewardAdTimer);_rewardAdTimer=null;pendingRewardAmt*=2;document.getElementById('rewardAmt').textContent='+'+pendingRewardAmt+' NC';document.getElementById('rewardBtns').innerHTML='<button class="btn btn-primary" onclick="closeReward()">✅ COLLECT 2x!</button>';}
+  },50);
+};
+window.closeReward=function(){
+  if(_rewardAdTimer){clearInterval(_rewardAdTimer);_rewardAdTimer=null;}
+  document.getElementById('rewardPopup').classList.remove('active');
+  addNC(pendingRewardAmt);sfxCoin();pulseHUD();
+  const hud=document.getElementById('currencyHud');
+  if(hud){const r=hud.getBoundingClientRect();floatCoin(pendingRewardAmt,r.left+r.width/2,r.top);}
+  pendingRewardAmt=0;
+};
+
+/* DAILY REWARD */
+const DAILY_REWARDS=[50,100,200,300,500,750,1000];
+function checkDaily(){
+  const last=localStorage.getItem('daily_last');
+  const streak=parseInt(localStorage.getItem('daily_streak')||'0');
+  const today=new Date().toDateString();
+  if(last===today)return;
+  const days=document.getElementById('dailyDays');
+  days.innerHTML=DAILY_REWARDS.slice(0,7).map((r,i)=>{
+    let cls='daily-day';
+    if(i<streak)cls+=' claimed';
+    if(i===streak)cls+=' today';
+    return '<div class="'+cls+'"><span>'+(i+1)+'</span><span style="font-size:0.55rem">'+r+'</span></div>';
+  }).join('');
+  const reward=DAILY_REWARDS[Math.min(streak,DAILY_REWARDS.length-1)];
+  document.getElementById('dailyAmt').textContent='+'+reward;
+  setTimeout(()=>document.getElementById('dailyPopup').classList.add('active'),1200);
+}
+window.claimDaily=function(){
+  const today=new Date().toDateString();
+  const streak=parseInt(localStorage.getItem('daily_streak')||'0');
+  const reward=DAILY_REWARDS[Math.min(streak,DAILY_REWARDS.length-1)];
+  localStorage.setItem('daily_last',today);
+  localStorage.setItem('daily_streak',(streak+1)%DAILY_REWARDS.length);
+  document.getElementById('dailyPopup').classList.remove('active');
+  setTimeout(()=>showReward(reward,'Daily Login Bonus! Come back tomorrow for more!'),400);
+};
+
+/* GAMES LIST */
+const GAMES=[
+  {id:'reaction1',  name:'Reaction Speed',      icon:'⚡', desc:'Click when screen flashes green!',           cat:'reflex', reward:40},
+  {id:'minesweeper',name:'Minesweeper',          icon:'💣', desc:'Clear the field. Flag the mines!',           cat:'puzzle', reward:80},
+  {id:'reaction2',  name:'Advanced Reaction',    icon:'🎯', desc:'Beware of fake flashes — click the real one!',cat:'reflex', reward:50},
+  {id:'memory1',    name:'Memory Match',         icon:'🃏', desc:'Flip and match all pairs.',                  cat:'memory', reward:45},
+  {id:'memory2',    name:'Timed Memory',         icon:'⏱', desc:'Match pairs before time runs out!',          cat:'memory', reward:55},
+  {id:'aim1',       name:'Aim Trainer',          icon:'🎯', desc:'Click the circles as fast as you can.',      cat:'skill',  reward:40},
+  {id:'aim2',       name:'Advanced Aim',         icon:'💥', desc:'Smaller, faster targets. Pro mode.',         cat:'skill',  reward:60},
+  {id:'guess1',     name:'Number Guess',         icon:'🔢', desc:'Guess the hidden number with hints.',        cat:'brain',  reward:35},
+  {id:'guess2',     name:'5-Attempt Guess',      icon:'🎲', desc:'Only 5 tries to guess correctly!',           cat:'brain',  reward:50},
+  {id:'battle1',    name:'Text Battle',          icon:'⚔️', desc:'Attack, defend, and heal to win!',           cat:'rpg',    reward:55},
+  {id:'battle2',    name:'Boss Battle',          icon:'🐉', desc:'Face a powerful boss. Survive!',             cat:'rpg',    reward:75},
+  {id:'puzzle1',    name:'Slider 3x3',           icon:'🧩', desc:'Slide tiles to solve the puzzle.',           cat:'puzzle', reward:50},
+  {id:'puzzle2',    name:'Slider 4x4',           icon:'🔲', desc:'Harder 4x4 tile slider.',                    cat:'puzzle', reward:70},
+  {id:'quiz1',      name:'Survival Quiz',        icon:'🏕', desc:'Make choices — survive the scenario.',       cat:'quiz',   reward:45},
+  {id:'quiz2',      name:'Horror Survival',      icon:'👻', desc:'Dark theme survival decisions.',             cat:'quiz',   reward:45},
+  {id:'clicker1',   name:'Clicker Game',         icon:'👆', desc:'Tap to gain points. Mindlessly addictive.',  cat:'idle',   reward:30},
+  {id:'clicker2',   name:'Idle Clicker+',        icon:'🤖', desc:'Auto-upgrades and passive income!',          cat:'idle',   reward:35},
+  {id:'power1',     name:'Power Generator',      icon:'✨', desc:'Generate your random superpower!',           cat:'fun',    reward:20},
+  {id:'fate1',      name:'Fate Generator',       icon:'🌀', desc:'What does fate have in store for you?',      cat:'fun',    reward:20},
+  {id:'iq1',        name:'IQ Quiz',              icon:'🧠', desc:'Trick questions to test your real IQ.',      cat:'brain',  reward:50},
+  {id:'iq2',        name:'Timed IQ Test',        icon:'⏰', desc:'IQ questions under time pressure!',          cat:'brain',  reward:60},
+  {id:'dodge1',     name:'Dodge Blocks',         icon:'🏃', desc:'Move left/right, dodge falling blocks.',     cat:'arcade', reward:40},
+  {id:'dodge2',     name:'Speed Dodge',          icon:'💨', desc:'Blocks fall faster. Can you last?',          cat:'arcade', reward:55},
+  {id:'pattern1',   name:'Pattern Memory',       icon:'💡', desc:'Repeat the flashing sequence.',              cat:'memory', reward:45},
+  {id:'pattern2',   name:'Advanced Pattern',     icon:'🌈', desc:'Longer sequences, bigger challenge.',        cat:'memory', reward:60},
+  {id:'typing1',    name:'Typing Speed',         icon:'⌨️', desc:'Type the text as fast as possible.',        cat:'skill',  reward:45},
+  {id:'math1',      name:'Quick Math',           icon:'➕', desc:'Solve math problems at lightning speed.',    cat:'brain',  reward:50},
+  {id:'color1',     name:'Color Match',          icon:'🎨', desc:'Match the ink color, not the word!',         cat:'reflex', reward:45},
+  {id:'reflex1',    name:'Reflex Tap',           icon:'⚡', desc:'Tap the glowing zones before they vanish.',  cat:'reflex', reward:40},
+  {id:'sequence1',  name:'Sequence Order',       icon:'🔢', desc:'Arrange numbers in correct order.',          cat:'brain',  reward:45},
+  {id:'maze1',      name:'Mini Maze',            icon:'🗺', desc:'Navigate the maze to reach the exit!',       cat:'puzzle', reward:55},
+  {id:'streak1',    name:'Streak Click',         icon:'🔥', desc:'Click continuously — miss once = game over!',cat:'reflex', reward:60},
+  {id:'runner1',    name:'One-Life Runner',      icon:'🏃', desc:'Jump obstacles. One life only!',             cat:'arcade', reward:65},
+  {id:'hold1',      name:'Precision Hold',       icon:'🎯', desc:'Hold to fill the bar to the exact target!',  cat:'skill',  reward:55},
+  {id:'revmem1',    name:'Reverse Memory',       icon:'🔄', desc:'Watch the pattern — repeat it in reverse!',  cat:'memory', reward:60},
+  {id:'timeper1',   name:'Time Perception',      icon:'⏱', desc:'Click at exactly 3 or 5 seconds. No timer!', cat:'brain',  reward:50},
+  {id:'risk1',      name:'Risk Multiplier',      icon:'🎲', desc:'Collect or risk it all for 2x points!',      cat:'brain',  reward:70},
+  {id:'spotdiff1',  name:'Spot the Difference',  icon:'👁', desc:'Find all differences between two grids fast!',cat:'reflex', reward:55},
+  {id:'combo1',     name:'Combo Tap Fighter',    icon:'⚔️', desc:'Tap the correct combo sequence to attack!',  cat:'skill',  reward:60},
+  {id:'fakebtn1',   name:'Fake Button Trap',     icon:'💀', desc:'Find the real button — others are traps!',   cat:'brain',  reward:65},
+  {id:'logic1',     name:'Logic Chain',          icon:'🧩', desc:'Solve 5 mini puzzles in a row without failing!',cat:'brain',reward:80},
+];
+
+/* RENDER GRID */
+let currentGameId=null;
+function renderGrid(){
+  const unlocked=getUnlocked(),hs=getHS(),grid=document.getElementById('gamesGrid');
+  grid.innerHTML='';
+  GAMES.forEach((g,i)=>{
+    // Ad banner every 10 games
+    if(i>0&&i%10===0){
+      const banner=document.createElement('div');
+      banner.className='ad-banner-block';
+      banner.innerHTML='📺 ADVERTISEMENT BANNER &nbsp;|&nbsp; <!-- INSERT BANNER AD SCRIPT HERE -->';
+      grid.appendChild(banner);
+    }
+    const isUnlocked=!!unlocked[g.id],hsVal=hs[g.id];
+    const card=document.createElement('div');
+    card.className='game-card'+(isUnlocked?' unlocked':'');
+    card.style.animationDelay=(i*0.035)+'s';
+    card.innerHTML=`<div class="card-num">#${String(i+1).padStart(2,'0')}</div><div class="card-lock">${isUnlocked?'🔓':'🔒'}</div><div class="card-icon">${g.icon}</div><div class="card-name">${g.name}</div><div class="card-desc">${g.desc}</div>${hsVal!==undefined?'<div class="card-hs">🏆 Best: '+hsVal+'</div>':''}`;
+    card.onclick=()=>handleCardClick(g.id);
+    grid.appendChild(card);
+  });
+  document.getElementById('statUnlocked').textContent=Object.values(unlocked).filter(Boolean).length;
+  document.getElementById('statPlayed').textContent=getSessions();
+}
+
+/* AD WALL */
+let pendingGameId=null,_adTimer=null;
+function handleCardClick(id){sfxClick();const u=getUnlocked();if(u[id])openGame(id);else{pendingGameId=id;showAdWall();}}
+function resetAdWallUI(){if(_adTimer){clearInterval(_adTimer);_adTimer=null;}const btn=document.getElementById('watchAdBtn');if(btn){btn.disabled=false;btn.textContent='▶ WATCH AD TO UNLOCK';}const prog=document.getElementById('adProgress');if(prog)prog.style.display='none';const bar=document.getElementById('adBar');if(bar)bar.style.width='0%';const te=document.getElementById('adTimer');if(te)te.textContent='Loading ad... 4s';updateNCDisplay();}
+function showAdWall(){resetAdWallUI();document.getElementById('adOverlay').classList.add('active');}
+function closeAdWall(){resetAdWallUI();document.getElementById('adOverlay').classList.remove('active');pendingGameId=null;}
+window.coinUnlock=function(){if(!pendingGameId)return;if(!spendNC(200)){sfxLose();const btn=document.getElementById('coinUnlockBtn');if(btn){btn.textContent='NOT ENOUGH NC!';btn.style.opacity='0.5';setTimeout(()=>{btn.style.opacity='1';updateNCDisplay();},1500);}return;}unlockGame(pendingGameId);};
+window.startAd=function(){if(_adTimer)return;const btn=document.getElementById('watchAdBtn');btn.disabled=true;btn.textContent='Loading...';document.getElementById('adProgress').style.display='block';let el=0;_adTimer=setInterval(()=>{el+=50;const pct=(el/4000)*100;const bar=document.getElementById('adBar');if(bar)bar.style.width=pct+'%';const te=document.getElementById('adTimer');if(te)te.textContent='Ad playing... '+Math.ceil((4000-el)/1000)+'s';if(el>=4000){clearInterval(_adTimer);_adTimer=null;unlockGame(pendingGameId);}},50);};
+function unlockGame(id){if(!id)return;const u=getUnlocked();u[id]=true;setUnlocked(u);resetAdWallUI();document.getElementById('adOverlay').classList.remove('active');renderGrid();sfxWin();openGame(id);}
+
+/* GAME MODAL */
+function openGame(id){
+  incSessions();currentGameId=id;
+  const g=GAMES.find(x=>x.id===id);
+  document.getElementById('gameModalTitle').textContent=g.icon+'  '+g.name;
+  document.getElementById('gameBody').innerHTML='';
+  document.getElementById('gameOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+  GAME_RUNNERS[id]();
+  renderGrid();
+}
+function closeGame(){document.getElementById('gameOverlay').classList.remove('active');document.body.style.overflow='';currentGameId=null;if(window._gameCleanup){window._gameCleanup();window._gameCleanup=null;}}
+
+/* GAME UTILS */
+function gameBody(){return document.getElementById('gameBody');}
+function lbHTML(key){const lb=getLB(key);if(!lb.length)return'';return'<div class="lb-panel"><div class="lb-title">🏆 Leaderboard</div>'+lb.map((s,i)=>'<div class="lb-row"><span class="lb-rank">#'+(i+1)+'</span><span>'+(i===0?'🥇':i===1?'🥈':'🥉')+' You</span><span class="lb-score">'+s+'</span></div>').join('')+'</div>';}
+function adRetryHTML(){return'<div class="ad-placeholder" style="margin-top:14px;font-size:0.68rem">📺 RETRY AD <!-- INSERT AD SCRIPT HERE --></div>';}
+function endScreen(id,score,msg){
+  saveLB(id,score);saveHS(id,score);renderGrid();
+  const g=GAMES.find(x=>x.id===id);
+  const baseReward=g?g.reward:30;
+  const earned=Math.max(baseReward+Math.floor(score/10),baseReward);
+  const isFirstToday=!localStorage.getItem('played_'+id+'_'+new Date().toDateString());
+  const bonus=isFirstToday?Math.floor(earned*0.5):0;
+  if(isFirstToday)localStorage.setItem('played_'+id+'_'+new Date().toDateString(),'1');
+  const total=earned+bonus;
+  setTimeout(()=>showReward(total,(isFirstToday?'First play bonus! +'+bonus+' extra NC. ':'')+msg),600);
+  return'<div class="game-end" style="display:flex"><div class="end-score">'+score+'</div><div class="end-msg">'+msg+'</div>'+adRetryHTML()+lbHTML(id)+'<div class="btn-row"><button class="btn btn-primary" onclick="openGame(\''+id+'\')">▶ PLAY AGAIN</button><button class="btn btn-secondary" onclick="closeGame()">✕ Close</button></div></div>';
+}
+/* ALL 40 GAME RUNNERS */
+const GAME_RUNNERS={};
+
+/* 1 REACTION */
+GAME_RUNNERS['reaction1']=function(){
+  let waiting=false,canClick=false,t0,results=[];
+  const b=gameBody();
+  b.innerHTML='<div class="game-instructions">Wait for GREEN then click as fast as possible!</div><div class="game-score-bar"><div class="score-chip">Round <span id="r1round">0</span>/5</div><div class="score-chip">Last: <span id="r1last">—</span> ms</div></div><div id="reaction-screen" style="background:var(--bg3);color:var(--text-dim)">Click START</div><div class="btn-row" style="margin-top:12px"><button class="btn btn-primary" id="r1start" onclick="r1Start()">▶ START</button></div>';
+  window._gameCleanup=()=>clearTimeout(window._r1t);
+  window.r1Start=function(){if(waiting)return;document.getElementById('r1start').style.display='none';results=[];nextRound();};
+  function nextRound(){if(results.length>=5){showR1End();return;}canClick=false;waiting=true;const s=document.getElementById('reaction-screen');s.style.background='var(--bg3)';s.style.color='var(--text-dim)';s.textContent='Wait...';s.onclick=earlyClick;window._r1t=setTimeout(()=>{s.style.background='#0f4';s.style.color='#000';s.textContent='CLICK NOW!';t0=Date.now();canClick=true;s.onclick=doClick;},1500+Math.random()*2500);}
+  function earlyClick(){if(!waiting||canClick)return;clearTimeout(window._r1t);const s=document.getElementById('reaction-screen');s.style.background='#f04';s.textContent='Too early!';setTimeout(nextRound,1200);}
+  function doClick(){if(!canClick)return;const rt=Date.now()-t0;results.push(rt);canClick=false;waiting=false;document.getElementById('r1round').textContent=results.length;document.getElementById('r1last').textContent=rt;sfxTick();const s=document.getElementById('reaction-screen');s.style.background='var(--neon-blue)';s.style.color='#000';s.textContent=rt+'ms';setTimeout(nextRound,800);}
+  function showR1End(){const avg=Math.round(results.reduce((a,b)=>a+b,0)/results.length);sfxWin();gameBody().innerHTML=endScreen('reaction1',avg,'Avg: '+avg+'ms — '+(avg<200?'Elite!':avg<300?'Good!':'Keep training!'));}
+};
+
+/* 2 MINESWEEPER */
+GAME_RUNNERS['minesweeper']=function(){
+  const DIFF={easy:{rows:9,cols:9,mines:10},medium:{rows:13,cols:13,mines:25},hard:{rows:16,cols:16,mines:50}};
+  let cfg=DIFF.easy,mboard=[],mOver=false,mStarted=false,mFlagCount=0,mRevealed=0,mElapsed=0,mTimerInt=null;
+  const b=gameBody();
+  b.innerHTML='<div class="game-instructions">Left-click reveal. Right-click / long-press = flag. First click is always safe!</div><div class="game-score-bar"><div class="score-chip">💣 <span id="ms-mines">10</span></div><div class="score-chip">⏱ <span id="ms-time">0s</span></div></div><div style="display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap"><button class="btn btn-primary" id="ms-easy" onclick="msDiff(\'easy\')">EASY</button><button class="btn btn-secondary" id="ms-med" onclick="msDiff(\'medium\')">MED</button><button class="btn btn-secondary" id="ms-hard" onclick="msDiff(\'hard\')">HARD</button><button class="btn btn-secondary" onclick="msInit()">↺</button></div><div style="overflow:auto;max-width:100%"><div id="ms-board"></div></div>';
+  window.msDiff=function(d){cfg=DIFF[d];['easy','med','hard'].forEach(x=>{const el=document.getElementById('ms-'+x);if(el)el.className=x===d.replace('medium','med')?'btn btn-primary':'btn btn-secondary';});msInit();};
+  window.msInit=function(){if(mTimerInt){clearInterval(mTimerInt);mTimerInt=null;}mOver=false;mStarted=false;mFlagCount=0;mRevealed=0;mElapsed=0;const tm=document.getElementById('ms-time');if(tm)tm.textContent='0s';const mc=document.getElementById('ms-mines');if(mc)mc.textContent=cfg.mines;mboard=[];for(let r=0;r<cfg.rows;r++){mboard[r]=[];for(let c=0;c<cfg.cols;c++)mboard[r][c]={mine:false,revealed:false,flagged:false,adj:0};}msRender();};
+  function msPlaceMines(sr,sc){let p=0;while(p<cfg.mines){const r=Math.floor(Math.random()*cfg.rows),c=Math.floor(Math.random()*cfg.cols);if(mboard[r][c].mine)continue;if(Math.abs(r-sr)<=1&&Math.abs(c-sc)<=1)continue;mboard[r][c].mine=true;p++;}for(let r=0;r<cfg.rows;r++)for(let c=0;c<cfg.cols;c++)if(!mboard[r][c].mine)mboard[r][c].adj=msCountAdj(r,c);}
+  function msCountAdj(r,c){let n=0;msNb(r,c,(nr,nc)=>{if(mboard[nr][nc].mine)n++;});return n;}
+  function msNb(r,c,fn){for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(dr===0&&dc===0)continue;const nr=r+dr,nc=c+dc;if(nr>=0&&nr<cfg.rows&&nc>=0&&nc<cfg.cols)fn(nr,nc);}}
+  function msRender(){const el=document.getElementById('ms-board');if(!el)return;el.style.gridTemplateColumns='repeat('+cfg.cols+',28px)';el.innerHTML='';for(let r=0;r<cfg.rows;r++)for(let c=0;c<cfg.cols;c++){const cell=document.createElement('div');cell.className='ms-cell';cell.dataset.r=r;cell.dataset.c=c;cell.addEventListener('click',msLC);cell.addEventListener('contextmenu',msRC);let pt=null;cell.addEventListener('touchstart',e=>{pt=setTimeout(()=>{msRC(e);pt=null;},500);},{passive:true});cell.addEventListener('touchend',()=>{if(pt){clearTimeout(pt);pt=null;}});cell.addEventListener('touchmove',()=>{if(pt){clearTimeout(pt);pt=null;}});el.appendChild(cell);}msUpdateAll();}
+  function msUpdateAll(){document.querySelectorAll('.ms-cell').forEach(el=>msUpdateCell(+el.dataset.r,+el.dataset.c,el));}
+  function msUpdateCell(r,c,el){if(!el)el=document.querySelector('.ms-cell[data-r="'+r+'"][data-c="'+c+'"]');if(!el)return;const d=mboard[r][c];el.className='ms-cell';el.textContent='';if(d.flagged&&!d.revealed){el.classList.add('ms-flag');el.textContent='🚩';}else if(d.revealed){el.classList.add('ms-rev');if(d.mine)el.textContent='💣';else if(d.adj>0){el.textContent=d.adj;el.classList.add('ms-n'+d.adj);}}}
+  function msLC(){if(mOver)return;const r=+this.dataset.r,c=+this.dataset.c,d=mboard[r][c];if(d.flagged||d.revealed)return;if(!mStarted){mStarted=true;msPlaceMines(r,c);mTimerInt=setInterval(()=>{mElapsed++;const t=document.getElementById('ms-time');if(t)t.textContent=mElapsed+'s';},1000);}if(d.mine)msLose(r,c);else{msReveal(r,c);msCheckWin();}}
+  function msRC(e){e.preventDefault();if(mOver||!mStarted)return;const r=+this.dataset.r,c=+this.dataset.c,d=mboard[r][c];if(d.revealed)return;d.flagged=!d.flagged;mFlagCount+=d.flagged?1:-1;const mc=document.getElementById('ms-mines');if(mc)mc.textContent=cfg.mines-mFlagCount;msUpdateCell(r,c);}
+  function msReveal(r,c){const stack=[[r,c]];while(stack.length){const[cr,cc]=stack.pop(),cell=mboard[cr][cc];if(cell.revealed||cell.flagged)continue;cell.revealed=true;mRevealed++;msUpdateCell(cr,cc);if(cell.adj===0&&!cell.mine)msNb(cr,cc,(nr,nc)=>{if(!mboard[nr][nc].revealed&&!mboard[nr][nc].flagged)stack.push([nr,nc]);});}}
+  function msCheckWin(){if(mRevealed>=cfg.rows*cfg.cols-cfg.mines){mOver=true;clearInterval(mTimerInt);for(let r=0;r<cfg.rows;r++)for(let c=0;c<cfg.cols;c++)if(mboard[r][c].mine){mboard[r][c].flagged=true;msUpdateCell(r,c);}sfxWin();setTimeout(()=>{gameBody().innerHTML=endScreen('minesweeper',Math.floor(1000/Math.max(mElapsed,1)),'Cleared in '+mElapsed+'s!');},400);}}
+  function msLose(hr,hc){mOver=true;clearInterval(mTimerInt);for(let r=0;r<cfg.rows;r++)for(let c=0;c<cfg.cols;c++)if(mboard[r][c].mine){mboard[r][c].revealed=true;const el=document.querySelector('.ms-cell[data-r="'+r+'"][data-c="'+c+'"]');if(el){el.className=(r===hr&&c===hc)?'ms-cell ms-boom':'ms-cell ms-mrev';el.textContent='💣';}}sfxLose();setTimeout(()=>{gameBody().innerHTML=endScreen('minesweeper',0,'💥 Hit a mine! Better luck next time.');},600);}
+  window._gameCleanup=()=>{if(mTimerInt){clearInterval(mTimerInt);mTimerInt=null;}mOver=true;};
+  msInit();
+};
+
+/* 3 ADVANCED REACTION */
+GAME_RUNNERS['reaction2']=function(){
+  let round=0,results=[],canClick=false,errors=0;
+  const b=gameBody();
+  b.innerHTML='<div class="game-instructions">FAKE flashes are traps — only click GREEN!</div><div class="game-score-bar"><div class="score-chip">Round <span id="r2r">0</span>/5</div><div class="score-chip">Errors: <span id="r2e" style="color:var(--neon-pink)">0</span></div></div><div id="reaction-screen" style="background:var(--bg3);color:var(--text-dim)">Click START</div><div class="btn-row" style="margin-top:12px"><button class="btn btn-primary" onclick="r2Start()">▶ START</button></div>';
+  window.r2Start=function(){round=0;errors=0;results=[];nextR2();};
+  window._gameCleanup=()=>clearTimeout(window._r2t);
+  const fakeColors=['#f04','#ff0','#a0f','#f80'];
+  function nextR2(){if(round>=5){endR2();return;}canClick=false;const s=document.getElementById('reaction-screen');s.style.background='var(--bg3)';s.textContent='Wait...';s.style.color='var(--text)';s.onclick=null;let fakes=Math.floor(Math.random()*3);function doFake(n){window._r2t=setTimeout(()=>{s.style.background=fakeColors[n%fakeColors.length];s.style.color='#fff';s.textContent='CLICK?';s.onclick=()=>{errors++;document.getElementById('r2e').textContent=errors;sfxLose();s.style.background='var(--bg3)';s.textContent='FAKE!';};setTimeout(()=>{s.style.background='var(--bg3)';s.textContent='Wait...';s.onclick=null;if(n<fakes-1)doFake(n+1);else realFlash();},600);},800+Math.random()*1000);}if(fakes>0)doFake(0);else realFlash();function realFlash(){window._r2t=setTimeout(()=>{s.style.background='#0f4';s.style.color='#000';s.textContent='NOW!';const t0=Date.now();canClick=true;s.onclick=()=>{const rt=Date.now()-t0;results.push(rt);canClick=false;round++;document.getElementById('r2r').textContent=round;sfxTick();s.style.background='var(--neon-blue)';s.style.color='#000';s.textContent=rt+'ms';setTimeout(nextR2,800);};},800+Math.random()*1500);}}
+  function endR2(){sfxWin();const avg=results.length?Math.round(results.reduce((a,b)=>a+b,0)/results.length):999;gameBody().innerHTML=endScreen('reaction2',avg,'Avg: '+avg+'ms | Errors: '+errors);}
+};
+
+/* 4-5 MEMORY */
+function memoryGame(timed,id){return function(){const emojis=['🦊','🐸','🌵','🍕','🚀','🎸','💎','🌈'];let cards=[...emojis,...emojis].sort(()=>Math.random()-0.5);let flipped=[],matched=0,moves=0,timeLeft=60;const b=gameBody();b.innerHTML='<div class="game-instructions">Find all matching pairs'+(timed?' before time runs out!':'.')+'</div><div class="game-score-bar"><div class="score-chip">Moves: <span id="memMoves">0</span></div><div class="score-chip">Pairs: <span id="memPairs">0</span>/8</div>'+(timed?'<div class="score-chip">Time: <span id="memTime">60</span>s</div>':'')+'</div><div id="memory-grid" style="grid-template-columns:repeat(4,1fr)"></div>';const grid=document.getElementById('memory-grid');cards.forEach((e,i)=>{const card=document.createElement('div');card.className='mem-card';card.dataset.idx=i;card.dataset.val=e;card.innerHTML='<span class="face">'+e+'</span>';card.onclick=()=>flipCard(card);grid.appendChild(card);});let locked=false;function flipCard(card){if(locked||card.classList.contains('flipped')||card.classList.contains('matched'))return;sfxTick();card.classList.add('flipped');flipped.push(card);if(flipped.length===2){locked=true;moves++;document.getElementById('memMoves').textContent=moves;if(flipped[0].dataset.val===flipped[1].dataset.val){flipped[0].classList.add('matched');flipped[1].classList.add('matched');matched++;document.getElementById('memPairs').textContent=matched;sfxWin();flipped=[];locked=false;if(matched===8)endMem();}else{setTimeout(()=>{flipped.forEach(c=>c.classList.remove('flipped'));flipped=[];locked=false;},900);}}}
+  if(timed){const t=setInterval(()=>{timeLeft--;const el=document.getElementById('memTime');if(el)el.textContent=timeLeft;if(timeLeft<=0||matched===8){clearInterval(t);endMem();}},1000);window._gameCleanup=()=>clearInterval(t);}
+  function endMem(){const score=timed?(matched*100-moves*5+timeLeft*3):(matched===8?Math.max(500-moves*20,50):matched*30);sfxWin();gameBody().innerHTML=endScreen(id,Math.max(score,0),matched===8?'Solved in '+moves+' moves!':'Time up! '+matched+'/8 pairs.');}
+};}
+GAME_RUNNERS['memory1']=memoryGame(false,'memory1');
+GAME_RUNNERS['memory2']=memoryGame(true,'memory2');
+
+/* 6-7 AIM */
+function aimGame(id,size,spawnMs){return function(){let hits=0,misses=0,active=false;const b=gameBody();b.innerHTML='<div class="game-instructions">Click the circles! 20 targets. Miss = -1.</div><div class="game-score-bar"><div class="score-chip">Hits: <span id="aimHits" style="color:var(--neon-green)">0</span></div><div class="score-chip">Misses: <span id="aimMiss" style="color:var(--neon-pink)">0</span></div><div class="score-chip">Left: <span id="aimLeft">20</span></div></div><div id="aim-area"></div><div class="btn-row" style="margin-top:11px"><button class="btn btn-primary" onclick="startAim()">▶ START</button></div>';let total=20,shown=0;const area=document.getElementById('aim-area');area.onclick=e=>{if(e.target===area&&active){misses++;document.getElementById('aimMiss').textContent=misses;sfxLose();}};window.startAim=function(){active=true;hits=0;misses=0;shown=0;document.querySelector('.btn-primary').style.display='none';spawnTarget();};function spawnTarget(){if(shown>=total)return;shown++;const t=document.createElement('div');t.className='aim-target';t.style.width=t.style.height=size+'px';t.style.left=(Math.random()*(area.offsetWidth-size-10)+5)+'px';t.style.top=(Math.random()*(area.offsetHeight-size-10)+5)+'px';t.onclick=e=>{e.stopPropagation();sfxTick();hits++;document.getElementById('aimHits').textContent=hits;document.getElementById('aimLeft').textContent=total-shown;t.remove();if(shown>=total&&!area.querySelector('.aim-target'))endAim();else if(shown<total)spawnTarget();};area.appendChild(t);setTimeout(()=>{if(t.parentNode){t.remove();misses++;document.getElementById('aimMiss').textContent=misses;if(shown<total)spawnTarget();else if(!area.querySelector('.aim-target'))endAim();}},spawnMs);}function endAim(){active=false;sfxWin();const score=hits*10-misses*5;gameBody().innerHTML=endScreen(id,Math.max(score,0),'Hits: '+hits+' | Misses: '+misses);}window._gameCleanup=()=>{active=false;};};}
+GAME_RUNNERS['aim1']=aimGame('aim1',40,2000);
+GAME_RUNNERS['aim2']=aimGame('aim2',22,1200);
+
+/* 8-9 GUESS */
+function guessGame(id,maxA,min,max){return function(){const secret=Math.floor(Math.random()*(max-min+1))+min;let attempts=0;const b=gameBody();b.innerHTML='<div class="game-instructions">Guess '+min+'-'+max+'. You have '+maxA+' attempt'+(maxA>1?'s':'')+'.</div><div class="game-score-bar"><div class="score-chip">Attempts: <span id="gAttempts">0</span>/'+maxA+'</div><div class="score-chip" id="gHint">Good luck!</div></div><div class="game-area" style="flex-direction:row;gap:12px"><input id="guess-input" type="number" min="'+min+'" max="'+max+'" placeholder="'+min+'-'+max+'" /><button class="btn btn-primary" onclick="submitGuess()">GUESS</button></div>';window.submitGuess=function(){const inp=document.getElementById('guess-input');const val=parseInt(inp.value);if(isNaN(val)||val<min||val>max)return;attempts++;document.getElementById('gAttempts').textContent=attempts;if(val===secret){sfxWin();gameBody().innerHTML=endScreen(id,Math.max(100-(attempts-1)*15,10),'Correct! It was '+secret+'. Solved in '+attempts+' attempt'+(attempts>1?'s':'')+'!');return;}if(attempts>=maxA){sfxLose();gameBody().innerHTML=endScreen(id,0,'Out of attempts! The number was '+secret+'.');return;}const diff=Math.abs(val-secret);const hint=diff<=5?'Very hot!':diff<=15?'Warm':diff<=30?'Cold':'Very cold';document.getElementById('gHint').textContent=(val<secret?'Higher':'Lower')+' — '+hint;sfxTick();inp.value='';inp.focus();};document.getElementById('guess-input').addEventListener('keydown',e=>{if(e.key==='Enter')window.submitGuess();});};}
+GAME_RUNNERS['guess1']=guessGame('guess1',10,1,100);
+GAME_RUNNERS['guess2']=guessGame('guess2',5,1,100);
+
+/* 10-11 BATTLE */
+function battleGame(id,pHP,eHP,pE,eE,boss){return function(){let pH=pHP,eH=eHP,over=false;const b=gameBody();b.innerHTML='<div class="game-instructions">'+(boss?'Boss Battle! Use strategy.':'Choose your action each turn!')+'</div><div class="battle-chars"><div class="char-box"><div class="char-emoji">'+pE+'</div><div class="char-name">YOU</div><div class="hp-bar-wrap"><div class="hp-bar" id="pBar" style="width:100%"></div></div><div class="char-hp" id="pHP">'+pH+'/'+pHP+' HP</div></div><div style="display:flex;align-items:center;font-family:Orbitron;font-size:0.8rem;color:var(--text-dim)">VS</div><div class="char-box"><div class="char-emoji">'+eE+'</div><div class="char-name">'+(boss?'BOSS':'ENEMY')+'</div><div class="hp-bar-wrap"><div class="hp-bar enemy" id="eBar" style="width:100%"></div></div><div class="char-hp" id="eHP">'+eH+'/'+eHP+' HP</div></div></div><div class="battle-log" id="bLog">Battle begins!</div><div class="battle-btns" id="bBtns" style="margin-top:13px"><button class="btn btn-primary" onclick="bAction(\'attack\')">⚔️ ATTACK</button><button class="btn" style="background:var(--bg3);border:1px solid var(--border)" onclick="bAction(\'defend\')">🛡 DEFEND</button><button class="btn" style="background:linear-gradient(135deg,#0f4,#0a8);color:#000" onclick="bAction(\'heal\')">💚 HEAL</button></div>';let defending=false;window.bAction=function(action){if(over)return;defending=false;const log=document.getElementById('bLog');if(action==='attack'){const dmg=Math.floor(Math.random()*(boss?20:25))+10;eH=Math.max(eH-dmg,0);sfxTick();log.innerHTML+='<br>You dealt <b style="color:var(--neon-green)">'+dmg+'</b> damage!';}else if(action==='defend'){defending=true;sfxTick();log.innerHTML+='<br>You brace!';}else{const h=Math.floor(Math.random()*20)+10;pH=Math.min(pH+h,pHP);sfxTick();log.innerHTML+='<br>Healed <b style="color:var(--neon-green)">'+h+'</b> HP!';}updateBars();log.scrollTop=log.scrollHeight;if(eH<=0){endBattle(true);return;}setTimeout(enemyTurn,700);};function enemyTurn(){if(over)return;const log=document.getElementById('bLog');const r=Math.random();if(r<0.6){let dmg=Math.floor(Math.random()*(boss?30:20))+(boss?15:8);if(defending)dmg=Math.floor(dmg*0.4);pH=Math.max(pH-dmg,0);log.innerHTML+='<br>Enemy hit for <b style="color:var(--neon-pink)">'+dmg+'</b>'+(defending?' (blocked!)':'')+'!';sfxLose();}else if(r<0.85){const h=Math.floor(Math.random()*(boss?40:15))+10;eH=Math.min(eH+h,eHP);log.innerHTML+='<br>Enemy healed '+h+'!';}else{log.innerHTML+='<br>Enemy prepares...';}updateBars();log.scrollTop=log.scrollHeight;if(pH<=0)endBattle(false);}function updateBars(){document.getElementById('pBar').style.width=(pH/pHP*100)+'%';document.getElementById('eBar').style.width=(eH/eHP*100)+'%';document.getElementById('pHP').textContent=pH+'/'+pHP+' HP';document.getElementById('eHP').textContent=eH+'/'+eHP+' HP';}function endBattle(won){over=true;const score=won?(pH*(boss?3:2)):0;setTimeout(()=>{sfxWin();gameBody().innerHTML=endScreen(id,score,won?'Victory! HP left: '+pH:'Defeated!');},500);}window._gameCleanup=()=>{over=true;};};}
+GAME_RUNNERS['battle1']=battleGame('battle1',100,80,'🧙','🐺',false);
+GAME_RUNNERS['battle2']=battleGame('battle2',100,200,'⚔️','🐉',true);
+
+/* 12-13 SLIDER PUZZLE */
+function sliderPuzzle(id,n){return function(){const total=n*n;let tiles=Array.from({length:total},(_,i)=>i),moves=0;for(let i=tiles.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[tiles[i],tiles[j]]=[tiles[j],tiles[i]];}const b=gameBody();b.innerHTML='<div class="game-instructions">Slide tiles to arrange 1–'+(total-1)+' in order. Click a tile next to blank.</div><div class="game-score-bar"><div class="score-chip">Moves: <span id="pMoves">0</span></div></div><div style="display:flex;justify-content:center"><div id="puzzle-grid" style="grid-template-columns:repeat('+n+',1fr);width:'+(n*60)+'px"></div></div>';renderPuzzle();function renderPuzzle(){const grid=document.getElementById('puzzle-grid');if(!grid)return;grid.innerHTML='';tiles.forEach((v,i)=>{const tile=document.createElement('div');tile.className='tile'+(v===0?' empty':'');tile.style.height='58px';tile.textContent=v===0?'':v;if(v!==0)tile.onclick=()=>clickTile(i);grid.appendChild(tile);});}function clickTile(i){const blank=tiles.indexOf(0);const row=x=>Math.floor(x/n),col=x=>x%n;if((row(i)===row(blank)&&Math.abs(col(i)-col(blank))===1)||(col(i)===col(blank)&&Math.abs(row(i)-row(blank))===1)){[tiles[i],tiles[blank]]=[tiles[blank],tiles[i]];moves++;document.getElementById('pMoves').textContent=moves;sfxTick();renderPuzzle();if(isSolved()){sfxWin();const score=Math.max(1000-moves*10,50);setTimeout(()=>{gameBody().innerHTML=endScreen(id,score,'Solved in '+moves+' moves!');},300);}}}function isSolved(){return tiles.every((v,i)=>v===(i===total-1?0:i+1));}window._gameCleanup=()=>{};};}
+GAME_RUNNERS['puzzle1']=sliderPuzzle('puzzle1',3);
+GAME_RUNNERS['puzzle2']=sliderPuzzle('puzzle2',4);
+
+/* 14-15 QUIZ */
+const SURVIVAL_QS=[{q:"Lost in woods at night. What do you do?",opts:["Stay put and signal for help","Walk randomly","Climb a tree","Start a fire"],a:0},{q:"You find water in the desert. It looks clear. Do you?",opts:["Drink immediately","Purify it first","Leave it","Drink a little to test"],a:1},{q:"A bear approaches your camp. You:",opts:["Run fast","Play dead","Make noise and look big","Climb a tree"],a:2},{q:"Stranded on an island. First priority?",opts:["Build shelter","Find food","Signal for rescue","Find fresh water"],a:3},{q:"You sprain your ankle miles from camp. You:",opts:["Rest and wait","Wrap it and head back","Ignore it","Call for help"],a:1}];
+const HORROR_QS=[{q:"You hear breathing in a dark hallway. You:",opts:["Scream and run","Slowly back away","Turn on light immediately","Call out 'who is there'"],a:2},{q:"Phone rings at 3 AM. Caller says they are inside the house. You:",opts:["Answer and talk","Call 911 immediately","Check every room","Go back to sleep"],a:1},{q:"You find a mysterious door you never saw before. You:",opts:["Open it immediately","Board it up forever","Call a priest","Carefully open it with a weapon"],a:3},{q:"Your friend acts strange after visiting old ruins. You:",opts:["Ignore it","Perform an exorcism","Take them to a doctor","Record and post online"],a:2},{q:"Electricity cuts out. You see a figure outside. You:",opts:["Go outside to check","Hide and call 911","Shout from window","Light candles"],a:1}];
+function quizGame(id,questions,dark){return function(){const qs=[...questions].sort(()=>Math.random()-0.5);let qi=0,score=0;const b=gameBody();if(dark)b.style.cssText='background:#0a0010';function render(){if(qi>=qs.length){sfxWin();gameBody().innerHTML=endScreen(id,score*20,'Score: '+score+'/'+qs.length+' '+(score===qs.length?'Perfect!':score>=3?'Good!':'Not survivable...'));return;}const q=qs[qi];b.innerHTML='<div class="game-instructions">'+(dark?'🕯️ ':'')+' Q '+(qi+1)+'/'+qs.length+'</div><div style="font-size:1rem;margin-bottom:16px;line-height:1.5;'+(dark?'color:#c0a0ff':'')+'" >'+q.q+'</div><div class="quiz-options">'+q.opts.map((o,i)=>'<div class="quiz-opt" onclick="qPick('+i+')">'+(String.fromCharCode(65+i))+'. '+o+'</div>').join('')+'</div>';}window.qPick=function(i){const opts=document.querySelectorAll('.quiz-opt');opts.forEach(o=>o.onclick=null);if(i===qs[qi].a){opts[i].classList.add('correct');score++;sfxWin();}else{opts[i].classList.add('wrong');opts[qs[qi].a].classList.add('correct');sfxLose();}qi++;setTimeout(render,1200);};render();};}
+GAME_RUNNERS['quiz1']=quizGame('quiz1',SURVIVAL_QS,false);
+GAME_RUNNERS['quiz2']=quizGame('quiz2',HORROR_QS,true);
+
+/* 16 CLICKER */
+GAME_RUNNERS['clicker1']=function(){let pts=0,clicks=0,active=true;const b=gameBody();b.innerHTML='<div class="game-instructions">Tap the button! Get 1000 in 30 seconds!</div><div class="game-score-bar"><div class="score-chip">Points: <span id="cPts" style="color:var(--neon-blue)">0</span></div><div class="score-chip">Time: <span id="cTime">30</span>s</div></div><div class="game-area"><button id="click-btn" onclick="doClick()">TAP!</button></div>';let tl=30;const start=Date.now();const t=setInterval(()=>{tl--;const el=document.getElementById('cTime');if(el)el.textContent=tl;if(tl<=0){clearInterval(t);active=false;sfxWin();gameBody().innerHTML=endScreen('clicker1',pts,pts+' points! '+(pts>=1000?'Legend!':pts>=500?'Great!':'Keep clicking!'));}},1000);window.doClick=function(){if(!active)return;pts++;sfxTick();document.getElementById('cPts').textContent=pts;};window._gameCleanup=()=>{clearInterval(t);active=false;};};
+
+/* 17 IDLE CLICKER */
+GAME_RUNNERS['clicker2']=function(){let pts=0,ppc=1,pps=0;const upgrades=[{name:'Better Click',desc:'+1/click',cost:50,key:'ppc',val:1},{name:'Auto Finger',desc:'+1/sec',cost:100,key:'pps',val:1},{name:'Power Click',desc:'+3/click',cost:300,key:'ppc',val:3},{name:'Robot Hand',desc:'+5/sec',cost:500,key:'pps',val:5}];let bought=upgrades.map(()=>0);const b=gameBody();b.innerHTML='<div class="game-instructions">Click to earn, buy upgrades for passive income!</div><div class="game-score-bar"><div class="score-chip">NC: <span id="idlePts">0</span></div><div class="score-chip">PPC: <span id="idlePPC">1</span></div><div class="score-chip">PPS: <span id="idlePPS">0</span></div></div><div class="game-area"><button id="click-btn" onclick="idleClick()">TAP!</button></div><div class="upgrades-panel" id="upgradesPanel"></div>';function renderUpgrades(){const panel=document.getElementById('upgradesPanel');if(!panel)return;panel.innerHTML=upgrades.map((u,i)=>'<div class="upgrade-item" onclick="buyUpgrade('+i+')"><span class="upgrade-name">'+u.name+'<br><span style="font-size:0.72rem;color:var(--text-dim)">'+u.desc+'</span></span><span class="upgrade-cost">'+u.cost*(bought[i]+1)+' pts</span></div>').join('');}function updateDisplay(){const pe=document.getElementById('idlePts');if(pe)pe.textContent=Math.floor(pts);const pp=document.getElementById('idlePPC');if(pp)pp.textContent=ppc;const ps=document.getElementById('idlePPS');if(ps)ps.textContent=pps;renderUpgrades();}window.idleClick=function(){pts+=ppc;sfxTick();updateDisplay();};window.buyUpgrade=function(i){const u=upgrades[i];const cost=u.cost*(bought[i]+1);if(pts>=cost){pts-=cost;bought[i]++;if(u.key==='ppc')ppc+=u.val;else pps+=u.val;sfxWin();updateDisplay();}};const t=setInterval(()=>{pts+=pps/10;updateDisplay();},100);window._gameCleanup=()=>clearInterval(t);updateDisplay();};
+
+/* 18 POWER GENERATOR */
+const POWERS=['Time Manipulation','Invisibility at Will','Super Speed','Mind Reading','Teleportation','Flight','Elemental Control','Future Sight','Strength x1000','Healing Factor','Reality Warping','Gravity Control','Memory Erasure','Duplication','Light Speed Reflexes','Shape Shifting','Telekinesis','Astral Projection','Sound Manipulation','Energy Absorption'];
+const WEAKNESSES=['Direct sunlight','Loud sounds','Water','Emotional stress','Physical contact','Electronic devices'];
+GAME_RUNNERS['power1']=function(){const b=gameBody();b.innerHTML='<div class="game-instructions">Generate your random superpower!</div><div class="gen-result" id="genResult" style="font-size:1.2rem">Press generate!</div><div class="btn-row" style="margin-top:14px"><button class="btn btn-primary" onclick="genPower()">GENERATE POWER</button></div>';window.genPower=function(){const p=POWERS[Math.floor(Math.random()*POWERS.length)];const w=WEAKNESSES[Math.floor(Math.random()*WEAKNESSES.length)];const tier=['Common','Rare','Epic','Legendary'][Math.floor(Math.random()*4)];const colors={Common:'#aaa',Rare:'#0af',Epic:'#a0f',Legendary:'#ff0'};sfxWin();document.getElementById('genResult').innerHTML='<div style="text-align:center"><div style="font-size:0.68rem;letter-spacing:3px;color:'+colors[tier]+';margin-bottom:7px">'+tier.toUpperCase()+'</div><div style="font-family:Orbitron;font-size:1.3rem;color:var(--neon-blue);margin-bottom:9px">'+p+'</div><div style="font-size:0.82rem;color:var(--text-dim)">Weakness: '+w+'</div></div>';};};
+
+/* 19 FATE */
+const FATES=['You will discover a hidden talent that changes your career.','An unexpected windfall arrives when you least expect it.','Your greatest adventure begins with a chance encounter.','You will travel to places most people only dream of.','A breakthrough idea will come to you in a dream.','Your greatest challenge becomes your greatest strength.','You will be known for something you have not started yet.','A small decision today leads to massive change in 5 years.','The door you have been knocking on will finally open.','Someone is thinking about you right now in a good way.'];
+GAME_RUNNERS['fate1']=function(){const b=gameBody();b.innerHTML='<div class="game-instructions">Let fate reveal your destiny!</div><div class="gen-result" id="fateResult">Spin the wheel...</div><div class="btn-row" style="margin-top:14px"><button class="btn btn-primary" onclick="spinFate()">SPIN FATE</button></div>';window.spinFate=function(){const el=document.getElementById('fateResult');el.textContent='Fate is deciding...';let i=0;const t=setInterval(()=>{el.textContent=FATES[Math.floor(Math.random()*FATES.length)];i++;if(i>15){clearInterval(t);sfxWin();}},100);};};
+
+/* 20-21 IQ */
+const IQ_QS=[{q:"A rooster lays an egg on top of a barn roof. Which way does it roll?",opts:["Left","Right","North","Roosters cannot lay eggs"],a:3},{q:"How many months have 28 days?",opts:["1 (February)","2","4","All 12"],a:3},{q:"You are in a race and pass the person in 2nd place. What place are you in?",opts:["1st","2nd","3rd","Last"],a:1},{q:"Which is heavier: a ton of feathers or a ton of gold?",opts:["Feathers","Gold","They are equal","Depends on density"],a:2},{q:"A farmer had 17 sheep, all but 9 died. How many are left?",opts:["8","9","17","0"],a:1},{q:"What do you throw out when you use it, keep when you do not?",opts:["Trash","An anchor","Your voice","A net"],a:1},{q:"If you have a 3-gallon jug and a 5-gallon jug, how do you measure exactly 4 gallons?",opts:["Fill 5, pour into 3, empty 3, pour 2 from 5 into 3, fill 5, pour into 3 until full","Just guess","Use a ruler","Impossible"],a:0}];
+GAME_RUNNERS['iq1']=quizGame('iq1',IQ_QS.map(q=>({...q})),false);
+GAME_RUNNERS['iq2']=function(){const qs=[...IQ_QS].sort(()=>Math.random()-0.5);let qi=0,score=0,timeLeft=10;const b=gameBody();function render(){if(qi>=qs.length){sfxWin();gameBody().innerHTML=endScreen('iq2',score*20,score+'/'+qs.length+' correct under pressure!');return;}const q=qs[qi];b.innerHTML='<div class="game-instructions">10 seconds per question!</div><div class="game-score-bar"><div class="score-chip">Q <span>'+(qi+1)+'</span>/'+qs.length+'</div><div class="score-chip">Score: <span>'+score+'</span></div><div class="score-chip" style="color:var(--neon-pink)">⏱ <span id="iqT">'+timeLeft+'</span>s</div></div><div style="font-size:0.98rem;margin-bottom:16px;line-height:1.5">'+q.q+'</div><div class="quiz-options">'+q.opts.map((o,i)=>'<div class="quiz-opt" onclick="iqPick('+i+')">'+(String.fromCharCode(65+i))+'. '+o+'</div>').join('')+'</div>';timeLeft=10;clearInterval(window._iqTimer);window._iqTimer=setInterval(()=>{timeLeft--;const el=document.getElementById('iqT');if(el)el.textContent=timeLeft;if(timeLeft<=0){clearInterval(window._iqTimer);sfxLose();qi++;setTimeout(render,600);}},1000);}window.iqPick=function(i){clearInterval(window._iqTimer);const opts=document.querySelectorAll('.quiz-opt');opts.forEach(o=>o.onclick=null);if(i===qs[qi].a){opts[i].classList.add('correct');score++;sfxWin();}else{opts[i].classList.add('wrong');opts[qs[qi].a].classList.add('correct');sfxLose();}qi++;setTimeout(render,1000);};render();window._gameCleanup=()=>clearInterval(window._iqTimer);};
+
+/* 22-23 DODGE */
+function dodgeGame(id,speedMul,spawnMs){return function(){const b=gameBody();b.innerHTML='<div class="game-instructions">Use arrow keys or tap buttons to dodge!</div><div class="game-score-bar"><div class="score-chip">Score: <span id="dScore">0</span></div><div class="score-chip">Lives: <span id="dLives" style="color:var(--neon-pink)">3</span></div></div><div id="dodge-area"></div><div class="maze-controls"><button class="maze-btn" onclick="movePlayer(-1)">◀</button><button class="maze-btn" onclick="movePlayer(1)">▶</button></div><div class="btn-row" style="margin-top:8px"><button class="btn btn-primary" onclick="startDodge()">▶ START</button></div>';const area=document.getElementById('dodge-area');let px=area.offsetWidth/2-16,lives=3,score=0,active=false;const player=document.createElement('div');player.id='dodge-player';player.style.left=px+'px';area.appendChild(player);function updatePlayer(){player.style.left=Math.max(0,Math.min(area.offsetWidth-32,px))+'px';}window.movePlayer=function(dir){if(!active)return;px+=dir*50;updatePlayer();};const keyH=e=>{if(e.key==='ArrowLeft')window.movePlayer(-1);if(e.key==='ArrowRight')window.movePlayer(1);};document.addEventListener('keydown',keyH);let spawnT,scoreT,blocks=[];window.startDodge=function(){active=true;document.querySelector('.btn-primary').style.display='none';scoreT=setInterval(()=>{score++;const el=document.getElementById('dScore');if(el)el.textContent=score;},200);spawnT=setInterval(spawn,spawnMs);requestAnimationFrame(gameLoop);};function spawn(){const block=document.createElement('div');block.className='dodge-block';block.style.left=(Math.random()*(area.offsetWidth-32))+'px';block.style.top='-32px';area.appendChild(block);blocks.push({el:block,y:-32});}function gameLoop(){if(!active)return;blocks.forEach((b2,i)=>{b2.y+=speedMul;b2.el.style.top=b2.y+'px';const bx=parseInt(b2.el.style.left),ph=area.offsetHeight-50;if(b2.y>=ph-8&&b2.y<=ph+32&&bx<px+26&&bx+32>px+6){lives--;const lv=document.getElementById('dLives');if(lv)lv.textContent='❤️'.repeat(lives);b2.el.remove();blocks.splice(i,1);if(lives<=0){endDodge();return;}sfxLose();}else if(b2.y>area.offsetHeight+8){b2.el.remove();blocks.splice(i,1);}});requestAnimationFrame(gameLoop);}function endDodge(){active=false;clearInterval(spawnT);clearInterval(scoreT);document.removeEventListener('keydown',keyH);sfxLose();setTimeout(()=>{gameBody().innerHTML=endScreen(id,score,'Score: '+score+'!');},400);}window._gameCleanup=()=>{active=false;clearInterval(spawnT);clearInterval(scoreT);document.removeEventListener('keydown',keyH);};};}
+GAME_RUNNERS['dodge1']=dodgeGame('dodge1',2,1800);
+GAME_RUNNERS['dodge2']=dodgeGame('dodge2',3.5,1200);
+
+/* 24-25 PATTERN */
+function patternGame(id,colors,startLen){return function(){const clrs=['#ff2d78','#00d4ff','#a855f7','#39ff14','#ff8c00','#00ffcc'].slice(0,colors);let sequence=[],userSeq=[],level=1,showing=false;const b=gameBody();b.innerHTML='<div class="game-instructions">Watch the pattern then repeat it!</div><div class="game-score-bar"><div class="score-chip">Level: <span id="patLevel">1</span></div><div class="score-chip">Status: <span id="patStatus">Press Start</span></div></div><div class="game-area"><div class="pattern-grid" style="grid-template-columns:repeat('+Math.ceil(colors/2)+',1fr)" id="patGrid"></div></div><div class="btn-row" style="margin-top:11px"><button class="btn btn-primary" onclick="startPattern()">▶ START</button></div>';const grid=document.getElementById('patGrid');clrs.forEach((c,i)=>{const cell=document.createElement('div');cell.className='pat-cell';cell.style.background=c+'55';cell.style.borderColor=c;cell.dataset.idx=i;cell.onclick=()=>userTap(i);grid.appendChild(cell);});function flash(i,ms){const cells=grid.querySelectorAll('.pat-cell');cells[i].style.opacity='1';cells[i].style.transform='scale(0.92)';sfxTick();return new Promise(r=>setTimeout(()=>{cells[i].style.opacity='0.3';cells[i].style.transform='scale(1)';setTimeout(r,100);},ms||400));}async function showSeq(){showing=true;document.getElementById('patStatus').textContent='Watch!';const cells=grid.querySelectorAll('.pat-cell');cells.forEach(c=>c.style.opacity='0.3');await new Promise(r=>setTimeout(r,600));for(const idx of sequence){await flash(idx,450);await new Promise(r=>setTimeout(r,150));}showing=false;userSeq=[];document.getElementById('patStatus').textContent='Your turn!';}window.startPattern=function(){document.querySelector('.btn-primary').style.display='none';sequence=[];level=1;nextLevel();};function nextLevel(){document.getElementById('patLevel').textContent=level;sequence.push(Math.floor(Math.random()*colors));showSeq();}function userTap(i){if(showing)return;flash(i,200);userSeq.push(i);const step=userSeq.length-1;if(userSeq[step]!==sequence[step]){sfxLose();gameBody().innerHTML=endScreen(id,level-1,'Wrong! Reached level '+level+'.');return;}if(userSeq.length===sequence.length){sfxWin();level++;setTimeout(nextLevel,600);}}window._gameCleanup=()=>{showing=false;};};}
+GAME_RUNNERS['pattern1']=patternGame('pattern1',4,5);
+GAME_RUNNERS['pattern2']=patternGame('pattern2',6,8);
+
+/* 26 TYPING */
+const TYPING_TEXTS=["The quick brown fox jumps over the lazy dog every single day.","Playing games is a great way to train your brain and reflexes.","Speed and accuracy are both important when you are typing fast.","Brain training helps you think faster and solve problems better."];
+GAME_RUNNERS['typing1']=function(){const text=TYPING_TEXTS[Math.floor(Math.random()*TYPING_TEXTS.length)];let started=false,startTime;const b=gameBody();b.innerHTML='<div class="game-instructions">Type the text below as fast as possible. Timer starts on first keystroke.</div><div class="game-score-bar"><div class="score-chip">WPM: <span id="typWPM">0</span></div><div class="score-chip">Accuracy: <span id="typAcc">100</span>%</div></div><div id="typing-text">'+text+'</div><input id="typing-input" type="text" placeholder="Start typing here..." autocomplete="off" autocorrect="off" spellcheck="false"/>';const inp=document.getElementById('typing-input');const textEl=document.getElementById('typing-text');inp.addEventListener('input',()=>{if(!started){started=true;startTime=Date.now();}const typed=inp.value;const elapsed=(Date.now()-startTime)/60000;const words=typed.trim().split(/\s+/).length;document.getElementById('typWPM').textContent=elapsed>0?Math.round(words/elapsed):0;let correct=0;for(let i=0;i<typed.length;i++)if(typed[i]===text[i])correct++;document.getElementById('typAcc').textContent=typed.length?Math.round(correct/typed.length*100):100;let html='';for(let i=0;i<text.length;i++){if(i<typed.length)html+='<span style="color:'+(typed[i]===text[i]?'var(--neon-green)':'var(--neon-pink)')+'">'+(text[i]==='<'?'&lt;':text[i]==='>'?'&gt;':text[i])+'</span>';else if(i===typed.length)html+='<span style="background:var(--neon-blue);color:#000">'+(text[i]==='<'?'&lt;':text[i])+'</span>';else html+='<span style="color:var(--text-dim)">'+text[i]+'</span>';}textEl.innerHTML=html;if(typed===text){const wpm=Math.round(words/elapsed);sfxWin();gameBody().innerHTML=endScreen('typing1',wpm,wpm+' WPM!');}});inp.focus();};
+
+/* 27 MATH */
+GAME_RUNNERS['math1']=function(){let score=0,qi=0;const total=10;let timeLeft=5;function gen(){const a=Math.floor(Math.random()*20)+1,b2=Math.floor(Math.random()*20)+1,ops=['+','-','x'];const op=ops[Math.floor(Math.random()*ops.length)];let ans;if(op==='+')ans=a+b2;else if(op==='-')ans=a-b2;else ans=a*b2;const wrong=[ans+Math.floor(Math.random()*5)+1,ans-Math.floor(Math.random()*5)-1,ans+Math.floor(Math.random()*10)+5];const opts=[ans,...wrong].sort(()=>Math.random()-0.5);return{q:a+' '+op+' '+b2,a:ans,opts};}let q=gen();const b=gameBody();function render(){if(qi>=total){sfxWin();gameBody().innerHTML=endScreen('math1',score*10,score+'/'+total+' correct!');return;}q=gen();b.innerHTML='<div class="game-instructions">5 seconds per question!</div><div class="game-score-bar"><div class="score-chip">Q <span>'+(qi+1)+'</span>/'+total+'</div><div class="score-chip">Score: <span>'+score+'</span></div><div class="score-chip" style="color:var(--neon-pink)">⏱ <span id="mathT">'+timeLeft+'</span>s</div></div><div class="math-problem">'+q.q+' = ?</div><div class="math-opts">'+q.opts.map(o=>'<div class="math-opt" onclick="mathPick('+o+')">'+o+'</div>').join('')+'</div>';timeLeft=5;clearInterval(window._mathT);window._mathT=setInterval(()=>{timeLeft--;const el=document.getElementById('mathT');if(el)el.textContent=timeLeft;if(timeLeft<=0){clearInterval(window._mathT);sfxLose();qi++;setTimeout(render,500);}},1000);}window.mathPick=function(v){clearInterval(window._mathT);const opts=document.querySelectorAll('.math-opt');opts.forEach(o=>o.onclick=null);if(v===q.a){opts[q.opts.indexOf(q.a)].style.background='rgba(57,255,20,0.2)';opts[q.opts.indexOf(q.a)].style.borderColor='var(--neon-green)';score++;sfxWin();}else sfxLose();qi++;setTimeout(render,600);};render();window._gameCleanup=()=>clearInterval(window._mathT);};
+
+/* 28 COLOR MATCH */
+const COLOR_DATA=[{name:'RED',color:'#ff2020'},{name:'BLUE',color:'#00aaff'},{name:'GREEN',color:'#00ee44'},{name:'YELLOW',color:'#ffee00'},{name:'PURPLE',color:'#aa44ff'},{name:'ORANGE',color:'#ff7700'}];
+GAME_RUNNERS['color1']=function(){let score=0,strikes=0,qi=0;const total=15;const b=gameBody();function render(){if(qi>=total||strikes>=3){sfxWin();gameBody().innerHTML=endScreen('color1',score,'Score: '+score+' | Strikes: '+strikes+'/3');return;}const word=COLOR_DATA[Math.floor(Math.random()*COLOR_DATA.length)];let inkColor;do{inkColor=COLOR_DATA[Math.floor(Math.random()*COLOR_DATA.length)];}while(inkColor===word);const ask=Math.random()>0.5?inkColor:word;const asking=ask===inkColor?'INK COLOR':'WORD MEANING';const correct=ask;const opts=[correct,...COLOR_DATA.filter(c=>c!==correct).sort(()=>Math.random()-0.5).slice(0,3)].sort(()=>Math.random()-0.5);b.innerHTML='<div class="game-instructions">Click the <b style="color:var(--neon-blue)">'+asking+'</b> shown below.</div><div class="game-score-bar"><div class="score-chip">Score: <span>'+score+'</span></div><div class="score-chip" style="color:var(--neon-pink)">Strikes: '+'X'.repeat(strikes)+'</div><div class="score-chip">Q '+(qi+1)+'/'+total+'</div></div><div class="color-word" style="color:'+inkColor.color+'">'+word.name+'</div><div class="color-opts">'+opts.map(o=>'<div class="color-opt" style="background:'+o.color+'22;border-color:'+o.color+'" onclick="colorPick(\''+o.name+'\',\''+correct.name+'\')">'+o.name+'</div>').join('')+'</div>';}window.colorPick=function(chosen,correct){if(chosen===correct){score++;sfxTick();}else{strikes++;sfxLose();}qi++;render();};render();};
+
+/* 29 REFLEX TAP */
+GAME_RUNNERS['reflex1']=function(){let score=0,missed=0,active=false,total=20,shown=0;const b=gameBody();b.innerHTML='<div class="game-instructions">Tap glowing zones before they vanish! 20 zones.</div><div class="game-score-bar"><div class="score-chip">Hit: <span id="rHit" style="color:var(--neon-green)">0</span></div><div class="score-chip">Miss: <span id="rMiss" style="color:var(--neon-pink)">0</span></div><div class="score-chip">Left: <span id="rLeft">20</span></div></div><div id="reflex-area"></div><div class="btn-row" style="margin-top:11px"><button class="btn btn-primary" onclick="startReflex()">▶ START</button></div>';const area=document.getElementById('reflex-area');window.startReflex=function(){active=true;document.querySelector('.btn-primary').style.display='none';spawnZone();};function spawnZone(){if(shown>=total)return;shown++;const z=document.createElement('div');z.className='reflex-zone';const w=80+Math.random()*60,h=40+Math.random()*30;z.style.width=w+'px';z.style.height=h+'px';z.style.left=(Math.random()*(area.offsetWidth-w-10)+5)+'px';z.style.top=(Math.random()*(area.offsetHeight-h-10)+5)+'px';z.textContent='TAP!';area.appendChild(z);const t=setTimeout(()=>{if(z.parentNode){z.remove();missed++;document.getElementById('rMiss').textContent=missed;if(shown>=total&&!area.querySelector('.reflex-zone'))endReflex();else if(shown<total)spawnZone();}},700+Math.random()*800);z.onclick=()=>{clearTimeout(t);z.remove();score++;sfxTick();document.getElementById('rHit').textContent=score;document.getElementById('rLeft').textContent=total-shown;if(shown>=total&&!area.querySelector('.reflex-zone'))endReflex();else if(shown<total)spawnZone();};}function endReflex(){active=false;sfxWin();const s=score*10-missed*5;gameBody().innerHTML=endScreen('reflex1',Math.max(s,0),'Hit: '+score+' | Miss: '+missed);}window._gameCleanup=()=>{active=false;};};
+
+/* 30 SEQUENCE */
+GAME_RUNNERS['sequence1']=function(){let score=0,level=1,expect=1;const b=gameBody();function genLevel(){const len=4+level;const nums=Array.from({length:len},(_,i)=>i+1).sort(()=>Math.random()-0.5);b.innerHTML='<div class="game-instructions">Click numbers in ascending order (1 first).</div><div class="game-score-bar"><div class="score-chip">Level: <span>'+level+'</span></div><div class="score-chip">Score: <span>'+score+'</span></div></div><div style="margin-bottom:14px;font-size:0.83rem;color:var(--text-dim)">Click in order: 1 to '+len+'</div><div class="seq-nums" id="seqNums">'+nums.map(n=>'<div class="seq-num" data-val="'+n+'" onclick="seqClick('+n+')">'+n+'</div>').join('')+'</div><div id="seqNext" style="font-family:Orbitron;font-size:0.78rem;color:var(--neon-purple);margin-top:11px;text-align:center">Next: <span id="seqExpect">1</span></div>';}window.seqClick=function(n){if(n!==expect){sfxLose();gameBody().innerHTML=endScreen('sequence1',score,'Wrong at level '+level+'!');return;}sfxTick();const el=document.querySelector('.seq-num[data-val="'+n+'"]');if(el){el.style.borderColor='var(--neon-green)';el.style.color='var(--neon-green)';el.onclick=null;}expect++;const len=4+level;if(expect>len){score+=level*10;sfxWin();level++;expect=1;setTimeout(genLevel,600);return;}document.getElementById('seqExpect').textContent=expect;};expect=1;genLevel();window._gameCleanup=()=>{};};
+
+/* 31 MAZE */
+GAME_RUNNERS['maze1']=function(){const CELL=26,COLS=15,ROWS=13,W=COLS*CELL,H=ROWS*CELL;const b=gameBody();b.innerHTML='<div class="game-instructions">Navigate to the exit using arrow keys or buttons.</div><div class="game-score-bar"><div class="score-chip">Steps: <span id="mazeSteps">0</span></div><div class="score-chip" id="mazeStatus">Find the exit!</div></div><div style="display:flex;justify-content:center"><canvas id="maze-canvas" width="'+W+'" height="'+H+'"></canvas></div><div class="maze-controls"><button class="maze-btn" onclick="mazeMove(0,-1)">▲</button></div><div class="maze-controls"><button class="maze-btn" onclick="mazeMove(-1,0)">◀</button><button class="maze-btn" onclick="mazeMove(0,1)">▼</button><button class="maze-btn" onclick="mazeMove(1,0)">▶</button></div>';const canvas=document.getElementById('maze-canvas'),ctx2=canvas.getContext('2d');const grid=Array.from({length:ROWS},()=>Array.from({length:COLS},()=>({n:true,s:true,e:true,w:true,visited:false})));function carve(r,c){grid[r][c].visited=true;const dirs=[[-1,0,'n','s'],[1,0,'s','n'],[0,1,'e','w'],[0,-1,'w','e']].sort(()=>Math.random()-0.5);dirs.forEach(([dr,dc,d1,d2])=>{const nr=r+dr,nc=c+dc;if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS&&!grid[nr][nc].visited){grid[r][c][d1]=false;grid[nr][nc][d2]=false;carve(nr,nc);}});}carve(0,0);let px=0,py=0,steps=0;const ex=COLS-1,ey=ROWS-1;function draw(){ctx2.fillStyle='#0a0a0f';ctx2.fillRect(0,0,W,H);for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const x=c*CELL,y=r*CELL,cell=grid[r][c];ctx2.strokeStyle='rgba(0,212,255,0.5)';ctx2.lineWidth=2;if(cell.n){ctx2.beginPath();ctx2.moveTo(x,y);ctx2.lineTo(x+CELL,y);ctx2.stroke();}if(cell.s){ctx2.beginPath();ctx2.moveTo(x,y+CELL);ctx2.lineTo(x+CELL,y+CELL);ctx2.stroke();}if(cell.w){ctx2.beginPath();ctx2.moveTo(x,y);ctx2.lineTo(x,y+CELL);ctx2.stroke();}if(cell.e){ctx2.beginPath();ctx2.moveTo(x+CELL,y);ctx2.lineTo(x+CELL,y+CELL);ctx2.stroke();}}ctx2.fillStyle='rgba(57,255,20,0.2)';ctx2.fillRect(ex*CELL+2,ey*CELL+2,CELL-4,CELL-4);ctx2.font=(CELL-6)+'px serif';ctx2.fillText('🏁',ex*CELL+2,ey*CELL+CELL-4);ctx2.fillStyle='var(--neon-blue)';ctx2.shadowColor='var(--neon-blue)';ctx2.shadowBlur=12;ctx2.beginPath();ctx2.arc(px*CELL+CELL/2,py*CELL+CELL/2,CELL/2-4,0,Math.PI*2);ctx2.fill();ctx2.shadowBlur=0;}window.mazeMove=function(dx,dy){const nr=py+dy,nc=px+dx;if(nr<0||nr>=ROWS||nc<0||nc>=COLS)return;const cell=grid[py][px];if(dx===1&&cell.e||dx===-1&&cell.w||dy===1&&cell.s||dy===-1&&cell.n)return;px=nc;py=nr;steps++;document.getElementById('mazeSteps').textContent=steps;sfxTick();draw();if(px===ex&&py===ey){sfxWin();setTimeout(()=>{gameBody().innerHTML=endScreen('maze1',Math.max(500-steps*5,10),'Escaped in '+steps+' steps!');},400);}};const keyH2=e=>{const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]};if(m[e.key]){e.preventDefault();window.mazeMove(...m[e.key]);}};document.addEventListener('keydown',keyH2);window._gameCleanup=()=>document.removeEventListener('keydown',keyH2);draw();};
+
+/* 32 STREAK CLICK */
+GAME_RUNNERS['streak1']=function(){let streak=0,best=0,active=false,speed=1000,timer=null;const b=gameBody();b.innerHTML='<div class="game-instructions">Click the zone before the timer runs out! Miss once = game over. Speed increases!</div><div class="game-score-bar"><div class="score-chip">Streak: <span id="strkCount" style="color:var(--neon-blue)">0</span></div><div class="score-chip">Best: <span id="strkBest">0</span></div><div class="score-chip">Speed: <span id="strkSpd">1.0</span>x</div></div><div id="streak-area" style="background:var(--bg3);color:var(--text-dim);font-family:Orbitron;font-size:1rem">Click START</div><div class="btn-row" style="margin-top:11px"><button class="btn btn-primary" id="strkStartBtn" onclick="strkStart()">▶ START</button></div>';const area=document.getElementById('streak-area');function strkStart(){document.getElementById('strkStartBtn').style.display='none';active=true;streak=0;speed=1000;nextClick();}function nextClick(){clearTimeout(timer);area.style.background='var(--bg3)';area.style.borderColor='var(--border)';area.textContent='Get ready...';setTimeout(()=>{if(!active)return;area.style.background='radial-gradient(circle,rgba(0,212,255,0.3),var(--bg3))';area.style.borderColor='var(--neon-blue)';area.textContent='CLICK NOW!';area.onclick=()=>{streak++;best=Math.max(best,streak);document.getElementById('strkCount').textContent=streak;document.getElementById('strkBest').textContent=best;area.onclick=null;speed=Math.max(300,1000-streak*40);document.getElementById('strkSpd').textContent=(1000/speed).toFixed(1);sfxTick();nextClick();};timer=setTimeout(()=>{if(!active)return;active=false;area.onclick=null;area.style.background='rgba(255,45,120,0.2)';area.style.borderColor='var(--neon-pink)';area.textContent='MISSED! Streak: '+streak;sfxLose();setTimeout(()=>{gameBody().innerHTML=endScreen('streak1',streak,'Streak: '+streak+' | Speed was '+(1000/speed).toFixed(1)+'x');},800);},speed);},400+Math.random()*600);}window.strkStart=strkStart;window._gameCleanup=()=>{active=false;clearTimeout(timer);};};
+
+/* 33 ONE-LIFE RUNNER */
+GAME_RUNNERS['runner1']=function(){const b=gameBody();b.innerHTML='<div class="game-instructions">Tap SPACE or the button below to jump over obstacles. ONE life!</div><div class="game-score-bar"><div class="score-chip">Score: <span id="runScore">0</span></div><div class="score-chip">Best: <span id="runBest">0</span></div></div><canvas id="runner-canvas" width="500" height="160"></canvas><div class="btn-row" style="margin-top:9px"><button class="btn btn-primary" onclick="runJump()" id="runJumpBtn">▶ START / JUMP</button></div>';const canvas=document.getElementById('runner-canvas'),ctx=canvas.getContext('2d');canvas.style.width='100%';let player={x:60,y:110,vy:0,onGround:true},obstacles=[],score=0,best=parseInt(localStorage.getItem('rb_runner1')||'0'),frame=0,running=false,gameStarted=false,raf;const GROUND=120;function drawScene(){ctx.fillStyle='#0a0a0f';ctx.fillRect(0,0,500,160);ctx.strokeStyle='rgba(0,212,255,0.3)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,GROUND+20);ctx.lineTo(500,GROUND+20);ctx.stroke();ctx.fillStyle='var(--neon-blue)';ctx.shadowColor='var(--neon-blue)';ctx.shadowBlur=10;ctx.fillRect(player.x,player.y,22,22);ctx.shadowBlur=0;obstacles.forEach(o=>{ctx.fillStyle='var(--neon-pink)';ctx.shadowColor='var(--neon-pink)';ctx.shadowBlur=8;ctx.fillRect(o.x,GROUND-o.h+20,18,o.h);ctx.shadowBlur=0;});ctx.fillStyle='rgba(0,212,255,0.6)';ctx.font='10px Orbitron';ctx.fillText('SCORE: '+score,10,15);}function gameLoop(){if(!running)return;frame++;player.vy+=0.6;player.y+=player.vy;if(player.y>=GROUND){player.y=GROUND;player.vy=0;player.onGround=true;}if(frame%Math.max(40,80-Math.floor(score/5))===0){obstacles.push({x:500,h:20+Math.random()*30});}obstacles.forEach(o=>o.x-=(3+score/50));obstacles=obstacles.filter(o=>o.x>-20);for(const o of obstacles){if(player.x+20>o.x&&player.x<o.x+18&&player.y+22>GROUND-o.h+20){running=false;best=Math.max(best,score);localStorage.setItem('rb_runner1',best);sfxLose();ctx.fillStyle='rgba(255,45,120,0.3)';ctx.fillRect(0,0,500,160);ctx.fillStyle='#fff';ctx.font='bold 20px Orbitron';ctx.textAlign='center';ctx.fillText('GAME OVER',250,80);ctx.textAlign='left';setTimeout(()=>{gameBody().innerHTML=endScreen('runner1',score,'Score: '+score+' | Best: '+best);},700);return;}}score++;document.getElementById('runScore').textContent=score;document.getElementById('runBest').textContent=Math.max(best,score);drawScene();raf=requestAnimationFrame(gameLoop);}window.runJump=function(){if(!gameStarted){gameStarted=true;running=true;document.getElementById('runJumpBtn').textContent='JUMP';requestAnimationFrame(gameLoop);}if(player.onGround){player.vy=-12;player.onGround=false;sfxTick();}};const keyH=e=>{if(e.code==='Space'){e.preventDefault();window.runJump();}};document.addEventListener('keydown',keyH);window._gameCleanup=()=>{running=false;cancelAnimationFrame(raf);document.removeEventListener('keydown',keyH);};drawScene();};
+
+/* 34 PRECISION HOLD */
+GAME_RUNNERS['hold1']=function(){let active=false,holding=false,startHold=0,attempts=0,score=0;const targets=[30,50,75,90,60,40,80];let ti=0;const b=gameBody();b.innerHTML='<div class="game-instructions">Hold the button to fill the bar. Release when the marker hits the target zone!</div><div class="game-score-bar"><div class="score-chip">Score: <span id="holdScore">0</span></div><div class="score-chip">Round: <span id="holdRound">1</span>/'+targets.length+'</div></div><div class="game-area" style="flex-direction:column;gap:14px"><div style="width:100%;background:var(--bg);border-radius:99px;height:20px;overflow:hidden;border:1px solid var(--border);position:relative"><div id="holdBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple));border-radius:99px;transition:none"></div><div id="holdTarget" style="position:absolute;top:0;height:100%;background:rgba(57,255,20,0.3);border:2px solid var(--neon-green);border-radius:4px"></div></div><div style="font-family:Orbitron;font-size:0.8rem;color:var(--text-dim)">Target: <span id="holdTgtLabel" style="color:var(--neon-green)">0%</span></div><button id="holdBtn" class="btn btn-primary" style="min-width:140px">HOLD ME</button><div id="holdResult" style="font-family:Orbitron;font-size:1rem;min-height:24px"></div></div>';setHoldTarget();let rafH;function setHoldTarget(){const t=targets[ti];document.getElementById('holdRound').textContent=ti+1;document.getElementById('holdTgtLabel').textContent=t+'%';const tEl=document.getElementById('holdTarget');tEl.style.left=(t-10)+'%';tEl.style.width='20%';}const btn=document.getElementById('holdBtn');function updateBar(){if(!holding)return;const elapsed=Date.now()-startHold;const pct=Math.min(elapsed/3000*100,100);document.getElementById('holdBar').style.width=pct+'%';if(pct>=100){release();}else rafH=requestAnimationFrame(updateBar);}btn.onmousedown=btn.ontouchstart=function(e){e.preventDefault();if(!active){active=true;}holding=true;startHold=Date.now();rafH=requestAnimationFrame(updateBar);};btn.onmouseup=btn.ontouchend=function(){if(holding)release();};function release(){if(!holding)return;holding=false;cancelAnimationFrame(rafH);const elapsed=Date.now()-startHold;const pct=Math.min(elapsed/3000*100,100);const target=targets[ti];const diff=Math.abs(pct-target);const res=document.getElementById('holdResult');if(diff<=10){score+=Math.round((10-diff)*10);sfxWin();res.textContent='Perfect! +'+Math.round((10-diff)*10)+' pts';res.style.color='var(--neon-green)';}else{sfxLose();res.textContent='Off by '+diff.toFixed(1)+'% (got '+pct.toFixed(1)+'%)';res.style.color='var(--neon-pink)';}document.getElementById('holdScore').textContent=score;document.getElementById('holdBar').style.width='0%';ti++;if(ti>=targets.length){setTimeout(()=>{gameBody().innerHTML=endScreen('hold1',score,'Precision score: '+score+'!');},800);}else{setTimeout(()=>{setHoldTarget();res.textContent='';},900);}}window._gameCleanup=()=>{cancelAnimationFrame(rafH);};};
+
+/* 35 REVERSE MEMORY */
+GAME_RUNNERS['revmem1']=function(){const clrs=['#ff2d78','#00d4ff','#a855f7','#39ff14','#ff8c00'];let seq=[],userSeq=[],level=1,showing=false;const b=gameBody();b.innerHTML='<div class="game-instructions">Watch the pattern — repeat it in REVERSE order!</div><div class="game-score-bar"><div class="score-chip">Level: <span id="rmLevel">1</span></div><div class="score-chip">Status: <span id="rmStatus">Press Start</span></div></div><div class="game-area"><div class="pattern-grid" style="grid-template-columns:repeat(3,1fr)" id="rmGrid"></div></div><div class="btn-row" style="margin-top:11px"><button class="btn btn-primary" onclick="rmStart()">▶ START</button></div>';const grid=document.getElementById('rmGrid');clrs.forEach((c,i)=>{const cell=document.createElement('div');cell.className='pat-cell';cell.style.background=c+'55';cell.style.borderColor=c;cell.dataset.idx=i;cell.onclick=()=>rmTap(i);grid.appendChild(cell);});function flash(i,ms){const cells=grid.querySelectorAll('.pat-cell');cells[i].style.opacity='1';cells[i].style.transform='scale(0.9)';sfxTick();return new Promise(r=>setTimeout(()=>{cells[i].style.opacity='0.3';cells[i].style.transform='scale(1)';setTimeout(r,100);},ms||400));}async function showSeq(){showing=true;document.getElementById('rmStatus').textContent='Watch...';grid.querySelectorAll('.pat-cell').forEach(c=>c.style.opacity='0.3');await new Promise(r=>setTimeout(r,600));for(const idx of seq){await flash(idx,400);await new Promise(r=>setTimeout(r,150));}showing=false;userSeq=[];document.getElementById('rmStatus').textContent='Now REVERSE it!';}window.rmStart=function(){document.querySelector('.btn-primary').style.display='none';seq=[];level=1;nextRmLevel();};function nextRmLevel(){document.getElementById('rmLevel').textContent=level;seq.push(Math.floor(Math.random()*clrs.length));showSeq();}function rmTap(i){if(showing)return;flash(i,200);userSeq.push(i);const step=userSeq.length-1;const expectedIdx=seq.length-1-step;if(userSeq[step]!==seq[expectedIdx]){sfxLose();gameBody().innerHTML=endScreen('revmem1',level-1,'Wrong reverse! Reached level '+level+'.');return;}if(userSeq.length===seq.length){sfxWin();level++;setTimeout(nextRmLevel,600);}}window._gameCleanup=()=>{showing=false;};};
+
+/* 36 TIME PERCEPTION */
+GAME_RUNNERS['timeper1']=function(){const targets=[3,5,3,5,7];let ti=0,score=0,phase='idle',t0;const b=gameBody();function render(){if(ti>=targets.length){sfxWin();gameBody().innerHTML=endScreen('timeper1',score,'Perception score: '+score+'!');return;}const t=targets[ti];b.innerHTML='<div class="game-instructions">Click EXACTLY when you think '+t+' seconds have passed. No timer shown!</div><div class="game-score-bar"><div class="score-chip">Round: <span>'+(ti+1)+'</span>/'+targets.length+'</div><div class="score-chip">Score: <span>'+score+'</span></div></div><div class="game-area" style="cursor:pointer;min-height:180px" onclick="tpClick()"><div style="font-family:Orbitron;font-size:1.2rem;color:var(--text-dim);text-align:center" id="tpMsg">Click to start counting!</div><div style="font-family:Orbitron;font-size:3rem;color:var(--neon-blue);margin-top:10px" id="tpTarget">'+t+'s</div></div>';phase='idle';}window.tpClick=function(){if(phase==='idle'){phase='running';t0=Date.now();document.getElementById('tpMsg').textContent='Counting... click at '+targets[ti]+'s!';document.getElementById('tpTarget').textContent='';}else if(phase==='running'){const elapsed=(Date.now()-t0)/1000;const diff=Math.abs(elapsed-targets[ti]);const pts=Math.max(0,Math.round((1-diff/targets[ti])*100));score+=pts;sfxTick();document.getElementById('tpMsg').textContent='You clicked at '+elapsed.toFixed(2)+'s (target: '+targets[ti]+'s) +'+pts+'pts';document.getElementById('tpTarget').textContent='';phase='done';ti++;setTimeout(render,1200);}};render();};
+
+/* 37 RISK MULTIPLIER */
+GAME_RUNNERS['risk1']=function(){let pts=0,round=0,lossChance=0.1,active=true;const b=gameBody();function render(){if(!active||round>=10){sfxWin();gameBody().innerHTML=endScreen('risk1',pts,'Final score: '+pts+' points!');return;}b.innerHTML='<div class="game-instructions">Collect safe points or RISK for 2x! Loss chance increases each round.</div><div class="game-score-bar"><div class="score-chip">Points: <span id="riskPts" style="color:var(--neon-gold)">'+pts+'</span></div><div class="score-chip">Round: <span>'+(round+1)+'</span>/10</div><div class="score-chip" style="color:var(--neon-pink)">Risk: <span>'+(lossChance*100).toFixed(0)+'%</span></div></div><div class="game-area" style="flex-direction:row;gap:14px;flex-wrap:wrap"><div style="background:var(--bg);border:2px solid var(--neon-green);border-radius:14px;width:140px;height:80px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:Orbitron;font-size:0.8rem;flex-direction:column;gap:5px;color:var(--neon-green);transition:all 0.2s" onclick="riskAction(false)"><span style="font-size:1.5rem">✅</span>COLLECT<span style="font-size:0.68rem">+'+((round+1)*10)+' pts</span></div><div style="background:var(--bg);border:2px solid var(--neon-pink);border-radius:14px;width:140px;height:80px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:Orbitron;font-size:0.8rem;flex-direction:column;gap:5px;color:var(--neon-pink);transition:all 0.2s" onclick="riskAction(true)"><span style="font-size:1.5rem">🎲</span>RISK 2x<span style="font-size:0.68rem">LOSE CHANCE: '+(lossChance*100).toFixed(0)+'%</span></div></div><div id="riskMsg" style="font-size:0.85rem;color:var(--text-dim);text-align:center"></div>';}window.riskAction=function(risk){const earn=(round+1)*10;if(!risk){pts+=earn;document.getElementById('riskMsg').textContent='Safe! +'+earn+' pts';sfxTick();}else{if(Math.random()<lossChance){const lost=pts;pts=Math.floor(pts/2);document.getElementById('riskMsg').textContent='LOST! Points halved (had '+lost+')';sfxLose();}else{pts+=earn*2;document.getElementById('riskMsg').textContent='WIN! +'+earn*2+' pts!';sfxWin();}}document.getElementById('riskPts').textContent=pts;lossChance=Math.min(lossChance+0.08,0.9);round++;setTimeout(render,900);};render();};
+
+/* 38 SPOT THE DIFFERENCE */
+GAME_RUNNERS['spotdiff1']=function(){const puzzles=[{a:['🦊','🐸','🌵','🍕','🚀','🎸','💎','🌈','🦊','🐸','🌵','🍕'],b:['🦊','🐸','🌵','🍕','🚀','🎸','💡','🌈','🦊','🐸','🌊','🍕'],diffs:[6,10]},{a:['🔥','⚡','🎯','🏆','🔥','⚡','🎯','🏆','🔥','⚡','🎯','🏆'],b:['🔥','⚡','🎯','🏆','🔥','⚡','🎯','🏆','🔥','⚡','🎸','🏆'],diffs:[10]},{a:['🍎','🍊','🍋','🍇','🍎','🍊','🍋','🍇','🍎','🍊','🍋','🍇'],b:['🍎','🍊','🍋','🍇','🍎','🍌','🍋','🍇','🍎','🍊','🍋','🍓'],diffs:[5,11]}];let pi=0,score=0,found=[];const b=gameBody();function render(){if(pi>=puzzles.length){sfxWin();gameBody().innerHTML=endScreen('spotdiff1',score,'Found all differences!');return;}found=[];const p=puzzles[pi];b.innerHTML='<div class="game-instructions">Click the cells that are DIFFERENT between the two grids!</div><div class="game-score-bar"><div class="score-chip">Found: <span id="sdFound">0</span>/'+p.diffs.length+'</div><div class="score-chip">Score: <span>'+score+'</span></div></div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><div><div style="font-family:Orbitron;font-size:0.65rem;color:var(--text-dim);text-align:center;margin-bottom:6px;letter-spacing:2px">GRID A</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px" id="sdGridA"></div></div><div><div style="font-family:Orbitron;font-size:0.65rem;color:var(--text-dim);text-align:center;margin-bottom:6px;letter-spacing:2px">GRID B</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px" id="sdGridB"></div></div></div>';const gA=document.getElementById('sdGridA'),gB=document.getElementById('sdGridB');p.a.forEach((e,i)=>{const el=document.createElement('div');el.style.cssText='width:40px;height:40px;background:var(--card);border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer';el.textContent=e;el.onclick=()=>sdClick(i,'a');gA.appendChild(el);});p.b.forEach((e,i)=>{const el=document.createElement('div');el.style.cssText='width:40px;height:40px;background:var(--card);border:1px solid var(--border);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer';el.textContent=e;el.onclick=()=>sdClick(i,'b');gB.appendChild(el);});}window.sdClick=function(i,grid){if(found.includes(i))return;const p=puzzles[pi];if(p.diffs.includes(i)){found.push(i);score+=20;sfxWin();const gA=document.getElementById('sdGridA'),gB=document.getElementById('sdGridB');const els=grid==='a'?gA.children:gB.children;if(els[i]){els[i].style.border='2px solid var(--neon-green)';els[i].style.background='rgba(57,255,20,0.15)';}document.getElementById('sdFound').textContent=found.length;if(found.length>=p.diffs.length){pi++;setTimeout(render,800);}}else{sfxLose();}};render();};
+
+/* 39 COMBO TAP FIGHTER */
+GAME_RUNNERS['combo1']=function(){const COMBOS=[['L','R','L'],['R','R','L'],['L','L','R','L'],['R','L','R','R'],['L','R','R','L','R']];let ci=0,step=0,score=0;const b=gameBody();function render(){if(ci>=COMBOS.length){sfxWin();gameBody().innerHTML=endScreen('combo1',score,'Combo master! Score: '+score);return;}const combo=COMBOS[ci];b.innerHTML='<div class="game-instructions">Tap the correct buttons in sequence. Wrong input breaks your combo!</div><div class="game-score-bar"><div class="score-chip">Combo: <span>'+(ci+1)+'</span>/'+COMBOS.length+'</div><div class="score-chip">Score: <span>'+score+'</span></div></div><div style="margin-bottom:14px;text-align:center"><div style="font-family:Orbitron;font-size:0.72rem;color:var(--text-dim);margin-bottom:8px;letter-spacing:2px">COMBO SEQUENCE</div><div style="display:flex;gap:8px;justify-content:center">'+combo.map((c,i)=>'<div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:Orbitron;font-size:0.7rem;border:2px solid var(--border);background:var(--card)">'+c+'</div>').join('')+'</div></div><div style="font-family:Orbitron;font-size:0.75rem;color:var(--text-dim);text-align:center;margin-bottom:12px">Progress: <span id="comboStep">'+step+'/'+combo.length+'</span></div><div style="display:flex;gap:14px;justify-content:center"><button class="btn btn-primary" onclick="comboPick(\'L\')" style="width:90px">◀ LEFT</button><button class="btn btn-red" onclick="comboPick(\'R\')" style="width:90px">RIGHT ▶</button></div><div id="comboMsg" style="text-align:center;margin-top:12px;font-size:0.85rem;color:var(--text-dim)"></div>';}window.comboPick=function(dir){const combo=COMBOS[ci];if(dir===combo[step]){step++;sfxTick();document.getElementById('comboStep').textContent=step+'/'+combo.length;if(step>=combo.length){score+=50+ci*20;sfxWin();document.getElementById('comboMsg').textContent='PERFECT COMBO! +' +(50+ci*20)+' pts';step=0;ci++;setTimeout(render,1000);}}else{sfxLose();document.getElementById('comboMsg').textContent='Wrong! Combo broken. Try again!';step=0;setTimeout(render,800);}};render();};
+
+/* 40 FAKE BUTTON TRAP */
+GAME_RUNNERS['fakebtn1']=function(){let score=0,round=0;const b=gameBody();function render(){if(round>=8){sfxWin();gameBody().innerHTML=endScreen('fakebtn1',score,'Survived the traps! Score: '+score);return;}round++;const numBtns=Math.min(4+round,9);const correctIdx=Math.floor(Math.random()*numBtns);const traps=['Reset Score','Lose a Turn','Back to Start','-50 Points','Fake Win','Try Again','Wrong!','Oops!'];let shuffledTraps=[...traps].sort(()=>Math.random()-0.5);b.innerHTML='<div class="game-instructions">Only ONE button is correct. Others are traps! Find it!</div><div class="game-score-bar"><div class="score-chip">Score: <span id="fbScore">'+score+'</span></div><div class="score-chip">Round: <span>'+round+'</span>/8</div></div><div style="font-family:Orbitron;font-size:0.78rem;color:var(--neon-purple);text-align:center;margin-bottom:14px">Find the REAL button</div><div class="fake-btn-grid" id="fbGrid"></div><div id="fbMsg" style="text-align:center;margin-top:12px;font-size:0.85rem;min-height:20px"></div>';const grid=document.getElementById('fbGrid');for(let i=0;i<numBtns;i++){const btn=document.createElement('div');btn.className='fake-btn';if(i===correctIdx){btn.textContent='REAL BUTTON ✓';btn.onclick=()=>{score+=100;document.getElementById('fbScore').textContent=score;document.getElementById('fbMsg').textContent='CORRECT! +100 pts';sfxWin();setTimeout(render,800);};}else{const trap=shuffledTraps[i%shuffledTraps.length];btn.textContent=trap;btn.style.color='var(--neon-pink)';btn.onclick=()=>{score=Math.max(0,score-20);document.getElementById('fbScore').textContent=score;document.getElementById('fbMsg').textContent='TRAP! -20 pts. Try again!';sfxLose();btn.style.borderColor='var(--neon-pink)';btn.style.background='rgba(255,45,120,0.1)';setTimeout(()=>{btn.style.borderColor='';btn.style.background='';document.getElementById('fbMsg').textContent='';},600);};}grid.appendChild(btn);}};render();};
+
+/* 41 LOGIC CHAIN */
+GAME_RUNNERS['logic1']=function(){const CHAIN=[{type:'math',q:'What is 7 x 8?',opts:[54,56,58,63],a:56},{type:'seq',q:'Next number: 2, 4, 8, 16, ?',opts:[24,28,32,30],a:32},{type:'logic',q:'If all roses are flowers and some flowers fade quickly, can we say some roses fade quickly?',opts:['Yes, definitely','No, not necessarily','Only red roses','All of them'],a:1},{type:'math',q:'What is 144 divided by 12?',opts:[11,12,13,14],a:12},{type:'riddle',q:'I have cities but no houses. I have mountains but no trees. I have water but no fish. What am I?',opts:['A dream','A map','A painting','A book'],a:1}];let step=0,score=0;const b=gameBody();function render(){if(step>=CHAIN.length){sfxWin();gameBody().innerHTML=endScreen('logic1',score+100,'Logic chain complete! Bonus +100!');return;}const q=CHAIN[step];b.innerHTML='<div class="game-instructions">Solve all 5 in a row. Fail one = start over!</div><div class="chain-progress">'+CHAIN.map((_,i)=>'<div class="chain-dot '+(i<step?'done':i===step?'active':'')+'"</div>').join('')+'</div><div style="font-size:0.98rem;margin-bottom:16px;line-height:1.6;color:var(--text)">'+q.q+'</div><div class="quiz-options">'+q.opts.map((o,i)=>'<div class="quiz-opt" onclick="logicPick('+i+')">'+String.fromCharCode(65+i)+'. '+o+'</div>').join('')+'</div>';}window.logicPick=function(i){const q=CHAIN[step];const opts=document.querySelectorAll('.quiz-opt');opts.forEach(o=>o.onclick=null);if(q.opts[i]===q.a){opts[i].classList.add('correct');score+=100;sfxWin();step++;setTimeout(render,1000);}else{opts[i].classList.add('wrong');opts[q.opts.indexOf(q.a)].classList.add('correct');sfxLose();setTimeout(()=>{step=0;score=Math.floor(score*0.5);gameBody().innerHTML='<div style="text-align:center;padding:24px"><div style="font-size:2rem;margin-bottom:10px">😤</div><div style="font-family:Orbitron;font-size:1rem;color:var(--neon-pink);margin-bottom:8px">WRONG!</div><div style="color:var(--text-dim);margin-bottom:16px">Chain broken. Restarting from step 1!</div><button class="btn btn-primary" onclick="logicRetry()">↺ RESTART</button></div>';},900);}};window.logicRetry=function(){step=0;score=Math.floor(score*0.5);render();};render();};
+/* BOOT */
+updateNCDisplay();
+checkDaily();
+renderGrid();
+</script>
+</body>
+</html>
