@@ -439,7 +439,7 @@ function renderGrid(){
         {id:'container-4e4aa0233179feedb91f9d38f2486583',src:'https://encyclopediainsoluble.com/4e4aa0233179feedb91f9d38f2486583/invoke.js'},
         {id:'container-7ebc5c371389d146a35b8dbe7d41c556',src:'https://encyclopediainsoluble.com/7ebc5c371389d146a35b8dbe7d41c556/invoke.js'},
       ];
-      const cfg=adConfigs[slotNum-1];
+      const cfg=adConfigs[slotNum-1]||adConfigs[0];
       const adDiv=document.createElement('div');
       adDiv.id=cfg.id;
       const adScript=document.createElement('script');
