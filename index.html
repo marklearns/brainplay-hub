@@ -434,8 +434,7 @@ function renderGrid(){
     if(i>0&&i%10===0){
       const banner=document.createElement('div');
       banner.className='ad-banner-block';
-      banner.innerHTML='📺 ADVERTISEMENT BANNER &nbsp;|&nbsp; <script async="async" data-cfasync="false" src="https://encyclopediainsoluble.com/7806174fded7cb81f34f0b55d834afd2/invoke.js"></script>
-<div id="container-7806174fded7cb81f34f0b55d834afd2"></div>';
+      banner.innerHTML='📺 ADVERTISEMENT BANNER &nbsp;|&nbsp; <!-- INSERT BANNER AD SCRIPT HERE -->';
       grid.appendChild(banner);
     }
     const isUnlocked=!!unlocked[g.id],hsVal=hs[g.id];
